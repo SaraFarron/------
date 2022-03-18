@@ -1,0 +1,2560 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:pPr><w:pStyle w:val="code"/></w:pPr><w:r><w:t><![CDATA[classdef PPPH < matlab.apps.AppBase
+
+    % Properties that correspond to app components
+    properties (Access = public)
+        Main                            matlab.ui.Figure
+        Tabs                            matlab.ui.container.TabGroup
+        Input                           matlab.ui.container.Tab
+        ObservationFileLabel            matlab.ui.control.Label
+        Observation                     matlab.ui.control.EditField
+        ClockSourceLabel                matlab.ui.control.Label
+        ClockDropDown                   matlab.ui.control.DropDown
+        ClockFileLabel                  matlab.ui.control.Label
+        Clock                           matlab.ui.control.EditField
+        AntennaFileEditFieldLabel       matlab.ui.control.Label
+        Antenna                         matlab.ui.control.EditField
+        ObservationButton               matlab.ui.control.Button
+        ClockButton                     matlab.ui.control.Button
+        AntennaButton                   matlab.ui.control.Button
+        SaveAsButton                    matlab.ui.control.Button
+        ImportButton                    matlab.ui.control.Button
+        SavedFileCB                     matlab.ui.control.CheckBox
+        ChoosesavedfileLabel            matlab.ui.control.Label
+        SavedFile                       matlab.ui.control.EditField
+        SavedFileButton                 matlab.ui.control.Button
+        DCBButton                       matlab.ui.control.Button
+        DCBFileLabel                    matlab.ui.control.Label
+        DCB                             matlab.ui.control.EditField
+        DCBLabel                        matlab.ui.control.Label
+        DCBDropDown                     matlab.ui.control.DropDown
+        SystemSelectionLabel            matlab.ui.control.Label
+        GPSCheckBox                     matlab.ui.control.CheckBox
+        GLONASSCheckBox                 matlab.ui.control.CheckBox
+        GALILEOCheckBox                 matlab.ui.control.CheckBox
+        BEIDOUCheckBox                  matlab.ui.control.CheckBox
+        ClockFileIntervalEditFieldLabel  matlab.ui.control.Label
+        ClockFileIntervalEditField      matlab.ui.control.NumericEditField
+        OrbitFilesForPanel              matlab.ui.container.Panel
+        OrbitButton                     matlab.ui.control.Button
+        ObservationdayLabel             matlab.ui.control.Label
+        Orbit                           matlab.ui.control.EditField
+        OrbitButton_B                   matlab.ui.control.Button
+        PreviousdayLabel                matlab.ui.control.Label
+        Orbit_B                         matlab.ui.control.EditField
+        OrbitButton_A                   matlab.ui.control.Button
+        NextdayLabel                    matlab.ui.control.Label
+        Orbit_A                         matlab.ui.control.EditField
+        secLabel                        matlab.ui.control.Label
+        Preprocess                      matlab.ui.container.Tab
+        ElevationCutOffAngleLabel       matlab.ui.control.Label
+        ElvAngle                        matlab.ui.control.NumericEditField
+        CycleSlipDetectionMethodsPanel  matlab.ui.container.Panel
+        MWCycle                         matlab.ui.control.CheckBox
+        GFCycle                         matlab.ui.control.CheckBox
+        ClockJumpCB                     matlab.ui.control.CheckBox
+        CodeSmoothCB                    matlab.ui.control.CheckBox
+        ProcessingModeButtonGroup       matlab.ui.container.ButtonGroup
+        StaticButton                    matlab.ui.control.RadioButton
+        KinematicButton                 matlab.ui.control.RadioButton
+        degreeLabel                     matlab.ui.control.Label
+        Model                           matlab.ui.container.Tab
+        SatellitePanel                  matlab.ui.container.Panel
+        ClockOffset                     matlab.ui.control.CheckBox
+        MassCenter                      matlab.ui.control.CheckBox
+        Windup                          matlab.ui.control.CheckBox
+        ReceiverPanel                   matlab.ui.container.Panel
+        APC                             matlab.ui.control.CheckBox
+        ARP                             matlab.ui.control.CheckBox
+        Atmosphere                      matlab.ui.container.Panel
+        Troposphere                     matlab.ui.control.CheckBox
+        Ionosphere                      matlab.ui.control.CheckBox
+        TroGrad                         matlab.ui.control.CheckBox
+        OtherPanel                      matlab.ui.container.Panel
+        RelClock                        matlab.ui.control.CheckBox
+        RelPath                         matlab.ui.control.CheckBox
+        SolidTide                       matlab.ui.control.CheckBox
+        Filter                          matlab.ui.container.Tab
+        LSQR                            matlab.ui.control.CheckBox
+        InitialParameter                matlab.ui.container.Panel
+        PositionEditFieldLabel          matlab.ui.control.Label
+        PosParameter                    matlab.ui.control.NumericEditField
+        ReceiverClockLabel              matlab.ui.control.Label
+        RecClkParameter                 matlab.ui.control.NumericEditField
+        TrophosphereLabel               matlab.ui.control.Label
+        TropParameter                   matlab.ui.control.NumericEditField
+        PhaseAmbiguitiesLabel           matlab.ui.control.Label
+        AmbParameter                    matlab.ui.control.NumericEditField
+        PosLabel                        matlab.ui.control.Label
+        PosNoise2_2Label_2              matlab.ui.control.Label
+        PosParameter2                   matlab.ui.control.NumericEditField
+        RecClkLabel2                    matlab.ui.control.Label
+        PosParameter2_2Label            matlab.ui.control.Label
+        RecClkParameter2                matlab.ui.control.NumericEditField
+        tropLabel                       matlab.ui.control.Label
+        PosParameter2_3Label            matlab.ui.control.Label
+        TropParameter2                  matlab.ui.control.NumericEditField
+        AmbLabel                        matlab.ui.control.Label
+        PosParameter2_4Label            matlab.ui.control.Label
+        AmbParameter2                   matlab.ui.control.NumericEditField
+        SystemTimeDifferenceLabel       matlab.ui.control.Label
+        STDParameter                    matlab.ui.control.NumericEditField
+        AmbParameter2_2Label            matlab.ui.control.Label
+        STDParameter2                   matlab.ui.control.NumericEditField
+        STDLabel                        matlab.ui.control.Label
+        ProcessParametrer               matlab.ui.container.Panel
+        PosParameter_2Label             matlab.ui.control.Label
+        PosNoise                        matlab.ui.control.NumericEditField
+        RecClkParameter_2Label          matlab.ui.control.Label
+        RecClkNoise                     matlab.ui.control.NumericEditField
+        TropParameter_2Label            matlab.ui.control.Label
+        TropNoise                       matlab.ui.control.NumericEditField
+        AmbParameter_2Label             matlab.ui.control.Label
+        AmbNoise                        matlab.ui.control.NumericEditField
+        PosNoise2_2Label                matlab.ui.control.Label
+        RecClkNoise2                    matlab.ui.control.NumericEditField
+        PosNoise2_3Label                matlab.ui.control.Label
+        TropNoise2                      matlab.ui.control.NumericEditField
+        PosNoise2_4Label                matlab.ui.control.Label
+        AmbNoise2                       matlab.ui.control.NumericEditField
+        PosNLabel                       matlab.ui.control.Label
+        RecClkNLabel                    matlab.ui.control.Label
+        TropNLabel                      matlab.ui.control.Label
+        AmbNLabel                       matlab.ui.control.Label
+        STDNLabel                       matlab.ui.control.Label
+        SystemTimeDifferenceLabel_2     matlab.ui.control.Label
+        STDNoise                        matlab.ui.control.NumericEditField
+        AmbNoise2_2Label                matlab.ui.control.Label
+        STDNoise2                       matlab.ui.control.NumericEditField
+        AmbNoise2_2Label_2              matlab.ui.control.Label
+        PosNoise2                       matlab.ui.control.NumericEditField
+        XEditFieldLabel                 matlab.ui.control.Label
+        AprioriX                        matlab.ui.control.NumericEditField
+        MeasurementOption               matlab.ui.container.Panel
+        WeightMethodLabel               matlab.ui.control.Label
+        MeasWeight                      matlab.ui.control.DropDown
+        MeasNoiseLabel                  matlab.ui.control.Label
+        CodeMeasLabel                   matlab.ui.control.Label
+        CodeMeas                        matlab.ui.control.NumericEditField
+        PhaseMeasLabel                  matlab.ui.control.Label
+        PhaseMeas                       matlab.ui.control.NumericEditField
+        mLabel                          matlab.ui.control.Label
+        APrioriPositionSourceDropDownLabel  matlab.ui.control.Label
+        AprioriPosDD                    matlab.ui.control.DropDown
+        YLabel                          matlab.ui.control.Label
+        AprioriY                        matlab.ui.control.NumericEditField
+        ZLabel                          matlab.ui.control.Label
+        AprioriZ                        matlab.ui.control.NumericEditField
+        mLabel_2                        matlab.ui.control.Label
+        Analysis                        matlab.ui.container.Tab
+        XLabel                          matlab.ui.control.Label
+        refX                            matlab.ui.control.NumericEditField
+        YLabel_2                        matlab.ui.control.Label
+        refY                            matlab.ui.control.NumericEditField
+        ZLabel_2                        matlab.ui.control.Label
+        refZ                            matlab.ui.control.NumericEditField
+        RFL                             matlab.ui.control.Label
+        NEU                             matlab.ui.control.Button
+        PI                              matlab.ui.control.Label
+        FromEditField_2Label            matlab.ui.control.Label
+        PFrom                           matlab.ui.control.NumericEditField
+        ToLabel                         matlab.ui.control.Label
+        PTo                             matlab.ui.control.NumericEditField
+        AL                              matlab.ui.control.Label
+        NorthEditFieldLabel             matlab.ui.control.Label
+        AN                              matlab.ui.control.NumericEditField
+        EastEditFieldLabel              matlab.ui.control.Label
+        AE                              matlab.ui.control.NumericEditField
+        UpLabel                         matlab.ui.control.Label
+        AU                              matlab.ui.control.NumericEditField
+        RMSL                            matlab.ui.control.Label
+        NorthEditFieldLabel_2           matlab.ui.control.Label
+        RN                              matlab.ui.control.NumericEditField
+        EastEditFieldLabel_2            matlab.ui.control.Label
+        RE                              matlab.ui.control.NumericEditField
+        UpLabel_2                       matlab.ui.control.Label
+        RU                              matlab.ui.control.NumericEditField
+        CTL                             matlab.ui.control.Label
+        CTLabel                         matlab.ui.control.Label
+        CT                              matlab.ui.control.NumericEditField
+        CalculateButton                 matlab.ui.control.Button
+        HOR                             matlab.ui.control.Button
+        SNO                             matlab.ui.control.Button
+        PDOP                            matlab.ui.control.Button
+        ThrDPos                         matlab.ui.control.Button
+        RecClkEst                       matlab.ui.control.Button
+        TZD                             matlab.ui.control.Button
+        MainLabel                       matlab.ui.control.Label
+        RunButton                       matlab.ui.control.Button
+        SaveConfigurationButton         matlab.ui.control.Button
+        DefaultConfigurationButton      matlab.ui.control.Button
+        EpochIntervalsecondofdayLabel   matlab.ui.control.Label
+        FromEditFieldLabel              matlab.ui.control.Label
+        FromEditField                   matlab.ui.control.NumericEditField
+        ToEditFieldLabel                matlab.ui.control.Label
+        ToEditField                     matlab.ui.control.NumericEditField
+        LoadSavedConfigurationButton    matlab.ui.control.Button
+    end
+
+    properties (Access = public)
+        Data = struct(); % include data
+        Options  = struct();
+        Solution = struct();
+        Import   = zeros(1);
+    end
+
+    % Callbacks that handle component events
+    methods (Access = private)
+
+        % Button pushed function: AntennaButton
+        function AntennaButtonPushed(app, event)
+           [file,path] = uigetfile('*.atx','Select the Antenna file');
+           if ischar(file)
+               anten = fullfile(path,file);
+               app.Antenna.Editable    = 'on';
+               app.Antenna.Value       = anten;
+               app.Antenna.Editable    = 'off';
+           else
+               return
+           end
+        end
+
+        % Value changed function: AprioriPosDD
+        function AprioriPosDDValueChanged(app, event)
+            value = app.AprioriPosDD.Value;
+            if strcmp(value,'RINEX')
+                app.AprioriX.Editable = 'off';
+                app.AprioriY.Editable = 'off';
+                app.AprioriZ.Editable = 'off';
+            elseif strcmp(value,'Specify')
+                app.AprioriX.Editable = 'on';
+                app.AprioriY.Editable = 'on';
+                app.AprioriZ.Editable = 'on';
+            end 
+        end
+
+        % Button pushed function: CalculateButton
+        function CalculateButtonPushed(app, event)
+            xs  = app.Solution.xs;
+            ref = [app.refX.Value;app.refY.Value;app.refZ.Value];
+            [n,e,u,ct,~,rms] = evaluate(xs,ref);
+            app.AN.Editable = 'on';
+            app.AN.Value    = n(end,1)*100;
+            app.AN.Editable = 'off';
+            app.AE.Editable = 'on';
+            app.AE.Value    = e(end,1)*100;
+            app.AE.Editable = 'off';
+            app.AU.Editable = 'on';
+            app.AU.Value    = u(end,1)*100;
+            app.AU.Editable = 'off';
+            app.RN.Editable = 'on';
+            app.RN.Value    = rms(1,1)*100;
+            app.RN.Editable = 'off';
+            app.RE.Editable = 'on';
+            app.RE.Value    = rms(2,1)*100;
+            app.RE.Editable = 'off';
+            app.RU.Editable = 'on';
+            app.RU.Value    = rms(3,1)*100;
+            app.RU.Editable = 'off';
+            app.CT.Editable = 'on';
+            app.CT.Value    = ct;
+            app.CT.Editable = 'off';
+        end
+
+        % Button pushed function: ClockButton
+        function ClockButtonPushed(app, event)
+           [file,path] = uigetfile('*.clk*','Select the Clock file');
+           if ischar(file)
+               clock = fullfile(path,file);
+               app.Clock.Editable      = 'on';
+               app.Clock.Value         = clock;
+               app.Clock.Editable      = 'off';
+           else
+               return
+           end
+        end
+
+        % Value changed function: ClockDropDown
+        function ClockDropDownValueChanged(app, event)
+            if strcmp(app.ClockDropDown.Value,'Clock File')
+                app.Clock.Enable       = 'on';
+                app.ClockButton.Enable = 'on';
+                app.ClockFileIntervalEditField.Enable = 'on';
+            elseif strcmp(app.ClockDropDown.Value,'Sp3 File')
+                app.Clock.Editable     = 'on';
+                app.Clock.Value        = '';
+                app.ClockFileIntervalEditField.Enable = 'off';
+                app.Clock.Editable     = 'off';
+                app.Clock.Enable       = 'off';
+                app.ClockButton.Enable = 'off';
+            end
+        end
+
+        % Button pushed function: DCBButton
+        function DCBButtonPushed(app, event)
+            [file,path] = uigetfile('*.DCB','Select the DCB file.');
+            if ischar(file)
+                dcb = fullfile(path,file);
+                app.DCB.Editable = 'on';
+                app.DCB.Value    = dcb;
+                app.DCB.Editable  = 'off';
+            else
+                return
+            end
+        end
+
+        % Value changed function: DCBDropDown
+        function DCBDropDownValueChanged(app, event)
+            if strcmp(app.DCBDropDown.Value,'P1 - C1')
+                app.DCB.Enable       = 'on';
+                app.DCBButton.Enable = 'on';
+            elseif strcmp(app.DCBDropDown.Value,'None')
+                app.DCB.Editable     = 'on';
+                app.DCB.Value        = '';
+                app.DCB.Editable     = 'off';
+                app.DCB.Enable       = 'off';
+                app.DCBButton.Enable = 'off';
+            end
+        end
+
+        % Button pushed function: DefaultConfigurationButton
+        function DefaultConfigurationButtonPushed(app, event)
+            % INPUT
+            % Observation File
+            app.Observation.Enable       = 'on';
+            app.Observation.Editable     = 'on';
+            app.Observation.Value        = '';
+            app.Observation.Editable     = 'off';
+            app.ObservationButton.Enable = 'on';
+            % Orbit Files
+            app.Orbit.Enable             = 'on';
+            app.Orbit.Editable           = 'on';
+            app.Orbit.Value              = '';
+            app.Orbit.Editable           = 'off';
+            app.OrbitButton.Enable       = 'on';
+            app.Orbit_B.Enable           = 'on';
+            app.Orbit_B.Editable         = 'on';
+            app.Orbit_B.Value            = '';
+            app.Orbit_B.Editable         = 'off';
+            app.OrbitButton_B.Enable     = 'on';
+            app.Orbit_A.Enable           = 'on';
+            app.Orbit_A.Editable         = 'on';
+            app.Orbit_A.Value            = '';
+            app.Orbit_A.Editable         = 'off';
+            app.OrbitButton_A.Enable     = 'on';
+            % Antenna Files
+            app.Antenna.Enable           = 'on';
+            app.Antenna.Editable         = 'on';
+            app.Antenna.Value            = '';
+            app.Antenna.Editable         = 'off';
+            app.AntennaButton.Enable     = 'on';
+            % Clock File
+            app.ClockDropDown.Enable     = 'on';
+            app.ClockDropDown.Value      = 'Clock File';
+            app.Clock.Enable             = 'on';
+            app.Clock.Editable           = 'on';
+            app.Clock.Value              = '';
+            app.Clock.Editable           = 'off';
+            app.ClockButton.Enable       = 'on';
+            app.ClockFileIntervalEditField.Value = 30;
+            % DCB File
+            app.DCBDropDown.Enable       = 'on';
+            app.DCBDropDown.Value        = 'None';
+            app.DCB.Enable               = 'off';
+            app.DCB.Editable             = 'off';
+            app.DCB.Value                = '';
+            app.DCB.Editable             = 'off';
+            app.DCBButton.Enable         = 'off';
+            % System Selection
+            app.GPSCheckBox.Value        = 1;
+            app.GLONASSCheckBox.Value    = 0;
+            app.GALILEOCheckBox.Value    = 0;
+            app.BEIDOUCheckBox.Value     = 0;
+            
+            app.ImportButton.Enable      = 'on';
+            app.SaveAsButton.Enable      = 'on';
+            app.SavedFileCB.Value        = 0;
+            app.SavedFile.Enable         = 'off';
+            app.SavedFile.Value          = '';
+            app.SavedFileButton.Enable   = 'off';
+            
+            % PREPROCESS
+            app.ElvAngle.Value           = 8;
+            app.MWCycle.Value            = 1;
+            app.GFCycle.Value            = 1;
+            app.ClockJumpCB.Value        = 1;
+            app.CodeSmoothCB.Value       = 0;
+            app.StaticButton.Value       = 1;
+            
+            % MODEL
+            app.ClockOffset.Value        =  1;
+            app.MassCenter.Value         =  1;
+            app.Windup.Value             =  1;
+            app.APC.Value                =  1;
+            app.ARP.Value                =  1;
+            app.Troposphere.Value        =  1;
+            app.TroGrad.Value           =  0;
+            app.RelClock.Value           =  1;
+            app.RelPath.Value            =  1;
+            app.SolidTide.Value          =  1;
+            
+            % FILTER
+            app.LSQR.Value               =  0;
+            
+            app.PosParameter.Editable    =  'on';
+            app.PosParameter2.Editable   =  'on';
+            app.RecClkParameter.Editable =  'on';
+            app.RecClkParameter2.Editable=  'on';
+            app.TropParameter.Editable   =  'on';
+            app.TropParameter2.Editable  =  'on';
+            app.AmbParameter.Editable    =  'on';
+            app.AmbParameter2.Editable   =  'on';
+            app.STDParameter.Editable    =  'on';
+            app.STDParameter2.Editable   =  'on';
+            
+            app.PosParameter.Value       =  1;
+            app.PosParameter2.Value      =  2;
+            app.RecClkParameter.Value    =  1;
+            app.RecClkParameter2.Value   =  5;
+            app.TropParameter.Value      =  0.5;
+            app.TropParameter2.Value     =  0;
+            app.AmbParameter.Value       =  2;
+            app.AmbParameter2.Value      =  1;
+            app.STDParameter.Value       =  1;
+            app.STDParameter2.Value      =  2;
+            
+            app.PosNoise.Value           = 0;
+            app.PosNoise2.Value          = 0;
+            app.PosNoise.Editable        = 'off';
+            app.PosNoise2.Editable       = 'off';
+            app.RecClkNoise.Value        =  1;
+            app.RecClkNoise2.Value       =  5;
+            app.TropNoise.Value          =  1;
+            app.TropNoise2.Value         = -9;
+            app.STDNoise.Value           =  1;
+            app.STDNoise2.Value          = -7;
+            
+            app.AprioriPosDD.Enable      = 'on';
+            app.AprioriPosDD.Value       = 'RINEX';
+            app.AprioriX.Editable        =  'Off';
+            app.AprioriY.Editable        =  'Off';
+            app.AprioriZ.Editable        =  'Off';
+            app.AprioriX.Value           =  0;
+            app.AprioriY.Value           =  0;
+            app.AprioriZ.Value           =  0;
+            
+            app.MeasWeight.Value         = 'Elevation Dependent';
+            app.CodeMeas.Value           = 3;
+            app.PhaseMeas.Value          = 0.003;
+            
+            % GENERAL
+            app.FromEditField.Value      =  0;
+            app.ToEditField.Value        = 86370;
+        end
+
+        % Button pushed function: HOR
+        function HORButtonPushed(app, event)
+            xs = app.Solution.xs;
+            ref = [app.refX.Value;app.refY.Value;app.refZ.Value];
+            [n,e,~,~,~,~] = evaluate(xs,ref);
+            
+            % boundaries
+            % st = app.PFrom.Value/30 + 1;
+            % fn = app.PTo.Value/30 + 1;
+            % t = st:fn;
+            % t = (t-1)./120; % hour
+            
+            fig = figure('Name','Horizontal Positioning Errors','NumberTitle','off','Color',[0.75 0.75 0.75]);
+            ax  = axes(fig);
+            plot(n(:,1),e(:,1),'*')
+            ax.Title.String = 'Horizontal Positioning Errors';
+            ax.XLabel.String = 'North Error (Meter)';
+            ax.YLabel.String = 'East Error (Meter)';
+            ax.XAxisLocation = 'origin';
+            ax.YAxisLocation = 'origin';
+            ax.XLim = [-1 1];
+            ax.YLim = [-1 1];
+            ax.XGrid = 'on';
+            ax.YGrid = 'on';
+        end
+
+        % Button pushed function: ImportButton
+        function ImportButtonPushed(app, event)
+            try
+                f = waitbar(0.25, {'Please wait...' 'Operation is processing'});
+                if isempty(app.Observation.Value)
+                    errordlg('Please select a valid observation file','File error');
+                elseif isempty(app.Orbit.Value)
+                    errordlg('Please select a valid orbit file','File error'); 
+                elseif isempty(app.Antenna.Value)
+                    errordlg('Please select a valid antenna file','File error');
+                elseif strcmp(app.ClockDropDown.Value,'Clock File') && isempty(app.Clock.Value)
+                    errordlg('Please select a valid clock file','File error');
+                elseif strcmp(app.DCBDropDown.Value,'P1 - C1') && isempty(app.DCB.Value)
+                    errordlg('Please select a valid DCB file','File error');
+                elseif app.GPSCheckBox.Value == 0 && app.GLONASSCheckBox.Value == 0
+                    errordlg('GPS or GLONASS have to be selected.','System selection error');
+                else
+                    % files
+                    files.rinex  = app.Observation.Value;
+                    files.orbitb = app.Orbit_B.Value;
+                    files.orbit  = app.Orbit.Value;
+                    files.orbita = app.Orbit_A.Value;
+                    files.anten  = app.Antenna.Value;
+                    files.clock  = app.Clock.Value;
+                    files.dcb    = app.DCB.Value;
+                    % options
+                    options.clock      = app.ClockDropDown.Value;
+                    options.system.gps = app.GPSCheckBox.Value;
+                    options.system.glo = app.GLONASSCheckBox.Value;
+                    options.system.gal = app.GALILEOCheckBox.Value;
+                    options.system.bds = app.BEIDOUCheckBox.Value;
+                    if ~isempty(app.DCB.Value)
+                        options.dcb = 1;
+                    else
+                        options.dcb = 0;
+                    end
+                    options.clck_int   = app.ClockFileIntervalEditField.Value;
+                    % read the files
+                    [ppps] = data_hand(files,options);
+                    
+                    waitbar(0.75,f)
+                    
+                    app.Data = ppps;
+                    % Specify the epoch time
+                    app.FromEditField.Value = ppps.obs.ep(1,1);
+                    app.ToEditField.Value = ppps.obs.ep(end,1);
+                    % Specify the plot time
+                    app.PFrom.Value = ppps.obs.ep(1,1);
+                    app.PTo.Value = ppps.obs.ep(end,1);
+                    
+                    msgbox('Import operation successfully completed');
+                    app.Import = 1;
+                    
+                    close(f)
+                end
+            catch ME
+                if any(ME.identifier)
+                    errordlg('Please check the files.','File Error');
+                end
+            end
+        end
+
+        % Value changed function: LSQR
+        function LSQRValueChanged(app, event)
+            value = app.LSQR.Value;
+            if value == 1
+                app.PosParameter.Editable     = 'off';
+                app.PosParameter2.Editable    = 'off';
+                app.RecClkParameter.Editable  = 'off';
+                app.RecClkParameter2.Editable = 'off';
+                app.TropParameter.Editable    = 'off';
+                app.TropParameter2.Editable   = 'off';
+                app.AmbParameter.Editable     = 'off';
+                app.AmbParameter2.Editable    = 'off';
+                app.STDParameter.Editable     = 'off';
+                app.STDParameter2.Editable    = 'off';
+                app.AprioriPosDD.Enable       = 'off';
+                if strcmp(app.AprioriPosDD.Value,'Specify')
+                    app.AprioriX.Value        =  0;
+                    app.AprioriX.Editable     = 'off';
+                    app.AprioriY.Value        =  0;
+                    app.AprioriY.Editable     = 'off';
+                    app.AprioriZ.Value        =  0;
+                    app.AprioriZ.Editable     = 'off';
+                end
+            elseif value == 0
+                app.PosParameter.Editable     = 'on';
+                app.PosParameter2.Editable    = 'on';
+                app.RecClkParameter.Editable  = 'on';
+                app.RecClkParameter2.Editable = 'on';
+                app.TropParameter.Editable    = 'on';
+                app.TropParameter2.Editable   = 'on';
+                app.AmbParameter.Editable     = 'on';
+                app.AmbParameter2.Editable    = 'on';
+                app.STDParameter.Editable     = 'on';
+                app.STDParameter2.Editable    = 'on';
+                app.AprioriPosDD.Enable       = 'on';
+                if strcmp(app.AprioriPosDD.Value,'Specify')
+                    app.AprioriX.Editable         = 'on';
+                    app.AprioriY.Editable         = 'on';
+                    app.AprioriZ.Editable         = 'on';
+                end
+            end
+        end
+
+        % Button pushed function: LoadSavedConfigurationButton
+        function LoadSavedConfigurationButtonPushed(app, event)
+            [file,path] = uigetfile('*.mat','Select the Previously Saved Data file');
+            
+            if ischar(file)
+                Option = fullfile(path,file);
+                load(Option)
+                % INPUT
+                app.GPSCheckBox.Value      = Option.GPSSelect;
+                app.GLONASSCheckBox.Value  = Option.GLONASSSelect; 
+                app.GALILEOCheckBox.Value  = Option.GALILEOSelect;
+                app.BEIDOUCheckBox.Value   = Option.BEIDOUSelect;
+                app.ClockDropDown.Value    = Option.ClockSelect;
+                if strcmp(app.ClockDropDown.Value,'Clock File')
+                    app.Clock.Enable = 'on';
+                    app.ClockButton.Enable = 'on';
+                else
+                    app.Clock.Enable = 'off';
+                    app.ClockButton.Enable = 'off';
+                end
+                app.ClockFileIntervalEditField.Value = Option.ClockInt;
+                app.DCBDropDown.Value      = Option.DCBSelect;
+                if strcmp(app.DCBDropDown.Value,'P1 - C1')
+                    app.DCB.Enable = 'on';
+                    app.DCBButton.Enable = 'on';
+                else
+                    app.DCB.Enable = 'off';
+                    app.DCBButton.Enable = 'off';
+                end
+                % PREPROCESS
+                app.ElvAngle.Value         = Option.ElvAngle;
+                app.MWCycle.Value          = Option.CSMw;
+                app.GFCycle.Value          = Option.CSGf;
+                app.ClockJumpCB.Value      = Option.ClkJump;
+                app.CodeSmoothCB.Value     = Option.CodSmth;
+                app.StaticButton.Value     = Option.Static;
+                app.KinematicButton.Value  = Option.Kinematic;
+                
+                % MODELLING
+                app.ClockOffset.Value      = Option.SatClk;
+                app.MassCenter.Value       = Option.SatAPC;
+                app.Windup.Value           = Option.SatWind;
+                app.APC.Value              = Option.RecAPC;
+                app.ARP.Value              = Option.RecARP;
+                app.Troposphere.Value      = Option.AtmTrop;
+                if app.Troposphere.Value == 1
+                    app.TroGrad.Enable = 'on';
+                    app.TroGrad.Value = Option.TroGrad;
+                elseif app.Troposphere.Value == 0
+                    app.TroGrad.Enable = 'off';
+                    app.TroGrad.Value = 0;
+                end
+                app.RelClock.Value         = Option.RelClk;
+                app.RelPath.Value          = Option.RelPath;
+                app.SolidTide.Value        = Option.Solid;
+                
+                % filter
+                app.LSQR.Value             = Option.InMethod;
+                
+                if app.LSQR.Value == 0
+                    app.PosParameter.Editable     = 'on';
+                    app.PosParameter2.Editable    = 'on';
+                    app.RecClkParameter.Editable  = 'on';
+                    app.RecClkParameter2.Editable = 'on';
+                    app.TropParameter.Editable    = 'on';
+                    app.TropParameter2.Editable   = 'on';
+                    app.AmbParameter.Editable     = 'on';
+                    app.AmbParameter2.Editable    = 'on';
+                    app.STDParameter.Editable     = 'on';
+                    app.STDParameter2.Editable    = 'on';
+                else
+                    app.PosParameter.Editable     = 'off';
+                    app.PosParameter2.Editable    = 'off';
+                    app.RecClkParameter.Editable  = 'off';
+                    app.RecClkParameter2.Editable = 'off';
+                    app.TropParameter.Editable    = 'off';
+                    app.TropParameter2.Editable   = 'off';
+                    app.AmbParameter.Editable     = 'off';
+                    app.AmbParameter2.Editable    = 'off';
+                    app.STDParameter.Editable     = 'off';
+                    app.STDParameter2.Editable    = 'off';
+                end
+                    
+                app.PosParameter.Value     = Option.PosParameter;
+                app.PosParameter2.Value    = Option.PosParameter2;
+                app.RecClkParameter.Value  = Option.RecClkParameter;
+                app.RecClkParameter2.Value = Option.RecClkParameter2;
+                app.TropParameter.Value    = Option.TropParameter;
+                app.TropParameter2.Value   = Option.TropParameter2;
+                app.AmbParameter.Value     = Option.AmbParameter;
+                app.AmbParameter2.Value    = Option.AmbParameter2;
+                app.STDParameter.Value     = Option.STDParameter;
+                app.STDParameter2.Value    = Option.STDParameter2;
+                
+                if app.StaticButton.Value == 1
+                    app.PosNoise.Editable  = 'off';
+                    app.PosNoise2.Editable = 'off';
+                else
+                    app.PosNoise.Editable  = 'on';
+                    app.PosNoise2.Editable = 'on';
+                end
+                
+                app.PosNoise.Value         = Option.NosPos;
+                app.PosNoise2.Value        = Option.NosPos2;
+                app.RecClkNoise.Value      = Option.NosClk;
+                app.RecClkNoise2.Value     = Option.NosClk2;
+                app.TropNoise.Value        = Option.NosTrop;
+                app.TropNoise2.Value       = Option.NosTrop2;
+                app.STDNoise.Value         = Option.NosSTD;
+                app.STDNoise2.Value        = Option.NosSTD2;
+                
+                app.AprioriPosDD.Value     = Option.ApMethod;
+                if strcmp(app.AprioriPosDD.Value,'RINEX')
+                    app.AprioriX.Editable      =  'off';
+                    app.AprioriY.Editable      =  'off';
+                    app.AprioriZ.Editable      =  'off';
+                else
+                    app.AprioriX.Editable      =  'on';
+                    app.AprioriY.Editable      =  'on';
+                    app.AprioriZ.Editable      =  'on';
+                end
+                app.AprioriX.Value         = Option.AprioriX;
+                app.AprioriY.Value         = Option.AprioriY;
+                app.AprioriZ.Value         = Option.AprioriZ;
+                
+                app.MeasWeight.Value       = Option.WeMethod;
+                app.CodeMeas.Value         = Option.CodeStd;
+                app.PhaseMeas.Value        = Option.PhaseStd;
+                % general
+                app.FromEditField.Value    = Option.From ;
+                app.ToEditField.Value      = Option.To ;
+            end
+        end
+
+        % Callback function
+        function MeasurementDropDownValueChanged(app, event)
+            value = app.MeasurementDropDown.Value;
+            if strcmp(value,'Static')
+                app.PosNoise.Value     = 0;
+                app.PosNoise2.Value    = 0;
+                
+                app.PosNoise.Editable  = 'off';
+                app.PosNoise2.Editable = 'off';
+            elseif strcmp(value,'Kinematic')
+                app.PosNoise.Editable  = 'on';
+                app.PosNoise2.Editable = 'on';
+            end
+        end
+
+        % Button pushed function: NEU
+        function NEUButtonPushed(app, event)
+            xs = app.Solution.xs;
+            ref = [app.refX.Value;app.refY.Value;app.refZ.Value];
+            [n,e,u,~,~,~] = evaluate(xs,ref);
+            
+            % boundaries
+            st = ((app.PFrom.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            fn = ((app.PTo.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            t = app.Data.obs.ep(st:fn,1);
+            t = t./3600; % hour
+            
+            fig = figure('Name','NEU Positioning Errors','NumberTitle','off','Color',[0.75 0.75 0.75]);
+            ax  = axes(fig);
+            plot(ax,t,n(:,1),t,e(:,1),t,u(:,1))
+            ax.Title.String = 'NEU Positioning Errors';
+            ax.XLabel.String = 'Time (Hour)';
+            ax.YLabel.String = 'Error (Meter)';
+            min1 = t(1) - ((t(end)-t(1))*0.1);
+            max1 = t(end);
+            ax.XLim = [min1 max1];
+            ax.XGrid = 'on';
+            ax.YGrid = 'on';
+            legend(ax,'North','East','Up')
+        end
+
+        % Button pushed function: ObservationButton
+        function ObservationButtonPushed(app, event)
+           [file,path] = uigetfile({'*.**o';'*.rnx'},'Select the Observation file');
+           if ischar(file)
+               rinex = fullfile(path,file);
+               app.Observation.Editable = 'on';
+               app.Observation.Value    = rinex;
+               app.Observation.Editable = 'off';
+           else
+               return
+           end
+           
+        end
+
+        % Button pushed function: OrbitButton
+        function OrbitButtonPushed(app, event)
+           [file,path] = uigetfile('*.sp3','Select the Orbit file');
+           if ischar(file)
+               orbit = fullfile(path,file);
+               app.Orbit.Editable       = 'on';
+               app.Orbit.Value          = orbit;
+               app.Orbit.Editable       = 'off';
+           else
+               return
+           end
+        end
+
+        % Button pushed function: PDOP
+        function PDOPButtonPushed(app, event)
+            kof = app.Solution.kof;
+            
+            % boundaries
+            st = ((app.PFrom.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            fn = ((app.PTo.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            t = app.Data.obs.ep(st:fn,1);
+            t = t./3600; % hour
+            gdop = zeros(size(t,1),1);
+            pdop = zeros(size(t,1),1);
+            tdop = zeros(size(t,1),1);
+            
+            n = 0;
+            for i=1:size(kof,3)
+                n = n+1;
+                AK = kof(:,:,i);
+                gdop(n,1) = sqrt(AK(1,1) + AK(2,2) + AK(3,3) + AK(4,4));
+                pdop(n,1) = sqrt(AK(1,1) + AK(2,2) + AK(3,3));
+                tdop(n,1) = sqrt(AK(1,1));
+            end
+            
+            fig = figure('Name','Dilution of Precision','NumberTitle','off','Color',[0.75 0.75 0.75]);
+            ax  = axes(fig);
+            plot(t,gdop,t,pdop,t,tdop)
+            ax.Title.String = 'Diluton of Precision';
+            ax.XLabel.String = 'Time (Hour)';
+            ax.XGrid = 'on';
+            ax.YGrid = 'on';
+            legend(ax,'GDOP','PDOP','TDOP')
+        end
+
+        % Button pushed function: RecClkEst
+        function RecClkEstButtonPushed(app, event)
+            xs = app.Solution.xs;
+            
+            % boundaries
+            st = ((app.PFrom.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            fn = ((app.PTo.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            t = app.Data.obs.ep(st:fn,1);
+            t = t./3600; % hour
+            
+            fig = figure('Name','Receiver Clock Estimation','NumberTitle','off','Color',[0.75 0.75 0.75]);
+            ax  = axes(fig);
+            plot(t,xs(4,:))
+            ax.Title.String = 'Receiver Clock Estimation';
+            ax.XLabel.String = 'Time (Hour)';
+            ax.YLabel.String = 'Receiver Clock (Meter)';
+            ax.XGrid = 'on';
+            ax.YGrid = 'on';
+            legend(ax,'Receiver Clock')
+        end
+
+        % Button pushed function: RunButton
+        function RunButtonPushed(app, event)
+            try
+                f = waitbar(0.25, {'Please wait...' 'Operation is processing'});
+                if app.Import ~= 1
+                    errordlg('You have to import your files before push run button','Import Error');
+                else
+                    % from files
+                    data = app.Data;
+                    % from options
+                    
+                    % preprocess
+                    Option.elvangle = app.ElvAngle.Value;
+                    Option.CSMw     = app.MWCycle.Value;
+                    Option.CSGf     = app.GFCycle.Value;
+                    Option.clkjump  = app.ClockJumpCB.Value;
+                    Option.codsmth  = app.CodeSmoothCB.Value;
+                    if app.StaticButton.Value == 1
+                        Option.ProMod = 1; %static
+                    else
+                        Option.ProMod = 0; %kinematic
+                    end
+                    
+                    % model
+                    Option.SatClk   = app.ClockOffset.Value;
+                    Option.SatAPC   = app.MassCenter.Value;
+                    Option.SatWind  = app.Windup.Value;
+                    Option.RecAPC   = app.APC.Value;
+                    Option.RecARP   = app.ARP.Value;
+                    Option.AtmTrop  = app.Troposphere.Value;
+                    Option.TroGrad  = app.TroGrad.Value;
+                    Option.RelClk   = app.RelClock.Value;
+                    Option.RelPath  = app.RelPath.Value;
+                    Option.Solid    = app.SolidTide.Value;
+                    
+                    % filter
+                    Option.InMethod = app.LSQR.Value;
+                    if app.LSQR.Value == 0
+                        Option.IntPos    = app.PosParameter.Value;
+                        Option.IntPos2   = app.PosParameter2.Value;
+                        Option.IntClk    = app.RecClkParameter.Value;
+                        Option.IntClk2   = app.RecClkParameter2.Value;
+                        Option.IntTrop   = app.TropParameter.Value;
+                        Option.IntTrop2  = app.TropParameter2.Value;
+                        Option.IntSTD    = app.STDParameter.Value;
+                        Option.IntSTD2   = app.STDParameter2.Value;
+                    end
+                    Option.IntAmb    = app.AmbParameter.Value;
+                    Option.IntAmb2   = app.AmbParameter2.Value;
+                    
+                    Option.NosPos   = app.PosNoise.Value;
+                    Option.NosPos2  = app.PosNoise2.Value;
+                    Option.NosClk   = app.RecClkNoise.Value;
+                    Option.NosClk2  = app.RecClkNoise2.Value;
+                    Option.NosTrop  = app.TropNoise.Value;
+                    Option.NosTrop2 = app.TropNoise2.Value;
+                    Option.NosSTD   = app.STDNoise.Value;
+                    Option.NosSTD2  = app.STDNoise2.Value;
+                    
+                    Option.ApMethod = app.AprioriPosDD.Value;
+                    if strcmp(app.AprioriPosDD.Value,'Specify')
+                        Option.AprioriX = app.AprioriX.Value; 
+                        Option.AprioriY = app.AprioriY.Value;
+                        Option.AprioriZ = app.AprioriZ.Value;
+                    end
+                    
+                    Option.WeMethod = app.MeasWeight.Value;
+                    Option.CodeStd  = app.CodeMeas.Value;
+                    Option.PhaseStd = app.PhaseMeas.Value;
+                    
+                    % general
+                    Option.from     = app.FromEditField.Value;
+                    Option.to       = app.ToEditField.Value;
+                    
+                    Option.system.gps = data.opt.system.gps;
+                    Option.system.glo = data.opt.system.glo;
+                    Option.system.gal = data.opt.system.gal;
+                    Option.system.bds = data.opt.system.bds;
+                    
+                    % preprocess
+                    [data] = preprocess(data,Option);
+                    waitbar(0.4,f)
+                    % modelling
+                    [model] = nmodel(data,Option);
+                    waitbar(0.65,f)
+                    % filtering
+                    [xs,kof,~] = MGNSS_filter(model,data,Option);
+                    waitbar(0.9,f)
+                    
+                    app.Solution.xs = xs;
+                    app.Solution.kof = kof;
+                    app.Solution.model = model;
+                    % filename = strcat(app.Observation.Value(1:4),app.Orbit.Value(4:8),'.txt');
+                    [file,path] = uiputfile('*.txt','Save File As');
+                    filename = fullfile(path,file);
+                    % dlmwrite(filename,xs','delimiter','\t','precision','%.3f')
+                    out_write(xs,Option,model,filename,data);
+                    msgbox('Operation Successfully Completed');
+                    app.NEU.Enable  = 'on';
+                    app.CalculateButton.Enable  = 'on';
+                    app.HOR.Enable  = 'on';
+                    app.SNO.Enable  = 'on';
+                    app.PDOP.Enable  = 'on';
+                    app.ThrDPos.Enable = 'on';
+                    app.RecClkEst.Enable = 'on';
+                    app.TZD.Enable = 'on';
+                    
+                    close(f)
+                end
+            catch ME
+                if any(ME.identifier)
+                    errordlg('Please check your files','Run Error');
+                end 
+            end
+        end
+
+        % Button pushed function: SNO
+        function SNOButtonPushed(app, event)
+            data = app.Data;
+            [satno] = dtr_satno(data.obs);
+            
+            % boundaries
+            st = ((app.PFrom.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            fn = ((app.PTo.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            t = app.Data.obs.ep(st:fn,1);
+            t = t./3600; % hour
+            
+            fig = figure('Name','Visible Satellite Numbers','NumberTitle','off','Color',[0.75 0.75 0.75]);
+            ax  = axes(fig);
+            plot(t,satno(st:fn,1))
+            ax.Title.String = 'Visible Satellite Numbers';
+            ax.XLabel.String = 'Time (Hour)';
+            ax.YLabel.String = 'Satellite Number';
+            ax.YLim = [0 max(satno(st:fn,1))+5];
+            ax.YTick = 0:2:max(satno)+5;
+            ax.XGrid = 'on';
+            ax.YGrid = 'on';
+            legend(ax,'Satellite Number')
+        end
+
+        % Button pushed function: SaveAsButton
+        function SaveAsButtonPushed(app, event)
+            try
+                if app.Import == 1
+                    data = app.Data;
+                    uisave({'data'});
+                else
+                    errordlg('You have to import your files before push save button','Import Error');
+                end
+            catch ME
+                if any(ME.identifier)
+                    errordlg('Please import your files','Import Error');
+                end
+            end
+        end
+
+        % Button pushed function: SaveConfigurationButton
+        function SaveConfigurationButtonPushed(app, event)
+            % INPUT
+            Option.GPSSelect        = app.GPSCheckBox.Value;
+            Option.GLONASSSelect    = app.GLONASSCheckBox.Value;
+            Option.GALILEOSelect    = app.GALILEOCheckBox.Value;
+            Option.BEIDOUSelect     = app.BEIDOUCheckBox.Value;
+            Option.ClockSelect      = app.ClockDropDown.Value;
+            Option.ClockInt         = app.ClockFileIntervalEditField.Value;
+            Option.DCBSelect        = app.DCBDropDown.Value;
+            % PREPROCESS
+            Option.ElvAngle         = app.ElvAngle.Value;
+            Option.CSMw             = app.MWCycle.Value;
+            Option.CSGf             = app.GFCycle.Value;
+            Option.ClkJump          = app.ClockJumpCB.Value;
+            Option.CodSmth          = app.CodeSmoothCB.Value;
+            Option.Static           = app.StaticButton.Value;
+            Option.Kinematic        = app.KinematicButton.Value;
+            % MODELLING
+            Option.SatClk           = app.ClockOffset.Value;
+            Option.SatAPC           = app.MassCenter.Value;
+            Option.SatWind          = app.Windup.Value;
+            Option.RecAPC           = app.APC.Value;
+            Option.RecARP           = app.ARP.Value;
+            Option.AtmTrop          = app.Troposphere.Value;
+            Option.TroGrad         = app.TroGrad.Value;
+            Option.RelClk           = app.RelClock.Value;
+            Option.RelPath          = app.RelPath.Value;
+            Option.Solid            = app.SolidTide.Value;
+            % filter
+            Option.InMethod         = app.LSQR.Value;
+            
+            Option.PosParameter     = app.PosParameter.Value;
+            Option.PosParameter2    = app.PosParameter2.Value;
+            Option.RecClkParameter  = app.RecClkParameter.Value;
+            Option.RecClkParameter2 = app.RecClkParameter2.Value;
+            Option.TropParameter    = app.TropParameter.Value;
+            Option.TropParameter2   = app.TropParameter2.Value;
+            Option.AmbParameter     = app.AmbParameter.Value;
+            Option.AmbParameter2    = app.AmbParameter2.Value;
+            Option.STDParameter     = app.STDParameter.Value;
+            Option.STDParameter2    = app.STDParameter2.Value;
+            
+            Option.NosPos           = app.PosNoise.Value;
+            Option.NosPos2          = app.PosNoise2.Value;
+            Option.NosClk           = app.RecClkNoise.Value;
+            Option.NosClk2          = app.RecClkNoise2.Value;
+            Option.NosTrop          = app.TropNoise.Value;
+            Option.NosTrop2         = app.TropNoise2.Value;
+            Option.NosSTD           = app.STDNoise.Value;
+            Option.NosSTD2          = app.STDNoise2.Value;
+            
+            Option.ApMethod         = app.AprioriPosDD.Value;
+            Option.AprioriX         = app.AprioriX.Value;
+            Option.AprioriY         = app.AprioriY.Value;
+            Option.AprioriZ         = app.AprioriZ.Value;
+            
+            Option.WeMethod         = app.MeasWeight.Value;
+            Option.CodeStd          = app.CodeMeas.Value;
+            Option.PhaseStd         = app.PhaseMeas.Value;
+            % GENERAL
+            Option.From             = app.FromEditField.Value;
+            Option.To               = app.ToEditField.Value;
+            
+            uisave({'Option'});
+        end
+
+        % Button pushed function: SavedFileButton
+        function SavedFileButtonPushed(app, event)
+           [file,path] = uigetfile('*.mat','Select the Previously Saved Data file');
+           if ischar(file)
+               ppps = fullfile(path,file);
+               app.SavedFile.Editable = 'on';
+               app.SavedFile.Value    = ppps;
+               app.SavedFile.Editable = 'off';
+               load(ppps);
+               app.Data = data(:);
+               app.Import = 1;
+           else
+               return
+           end
+        end
+
+        % Value changed function: SavedFileCB
+        function SavedFileCBValueChanged(app, event)
+            value = app.SavedFileCB.Value;
+            if value == 1
+                app.Observation.Enable       = 'off';
+                app.ObservationButton.Enable = 'off';
+                app.Orbit.Enable             = 'off';
+                app.OrbitButton.Enable       = 'off';
+                app.Orbit_B.Enable           = 'off';
+                app.OrbitButton_B.Enable     = 'off';
+                app.Orbit_A.Enable           = 'off';
+                app.OrbitButton_A.Enable     = 'off';
+                app.ClockDropDown.Enable     = 'off';
+                app.Clock.Enable             = 'off';
+                app.ClockButton.Enable       = 'off';
+                app.Antenna.Enable           = 'off';
+                app.AntennaButton.Enable     = 'off';
+                app.ImportButton.Enable      = 'off';
+                app.SaveAsButton.Enable      = 'off';
+                app.DCBDropDown.Enable       = 'off';
+                app.DCBButton.Enable         = 'off';
+                app.DCB.Enable               = 'off';
+                app.ClockFileIntervalEditField.Enable = 'off';
+                app.GPSCheckBox.Enable       = 'off';
+                app.GLONASSCheckBox.Enable   = 'off';
+                app.GALILEOCheckBox.Enable   = 'off';
+                app.BEIDOUCheckBox.Enable    = 'off';
+                
+                app.SavedFile.Enable         = 'on';
+                app.SavedFileButton.Enable   = 'on';
+            elseif value == 0
+                app.Observation.Enable       = 'on';
+                app.ObservationButton.Enable = 'on';
+                app.Orbit.Enable             = 'on';
+                app.OrbitButton.Enable       = 'on';
+                app.Orbit_B.Enable           = 'on';
+                app.OrbitButton_B.Enable     = 'on';
+                app.Orbit_A.Enable           = 'on';
+                app.OrbitButton_A.Enable     = 'on';
+                app.ClockDropDown.Enable     = 'on';
+                if strcmp(app.ClockDropDown.Value,'Clock File')
+                    app.ClockButton.Enable   = 'on';
+                    app.Clock.Enable         = 'on';
+                end
+                app.Antenna.Enable           = 'on';
+                app.AntennaButton.Enable     = 'on';
+                app.ImportButton.Enable      = 'on';
+                app.SaveAsButton.Enable      = 'on';
+                app.DCBDropDown.Enable       = 'on';
+                if strcmp(app.DCBDropDown.Value,'P1 - C1')
+                    app.DCBButton.Enable     = 'on';
+                    app.DCB.Enable           = 'on';
+                end
+                app.ClockFileIntervalEditField.Enable = 'on';
+                app.GPSCheckBox.Enable       = 'on';
+                app.GLONASSCheckBox.Enable   = 'on';
+                app.GALILEOCheckBox.Enable   = 'on';
+                app.BEIDOUCheckBox.Enable    = 'on';
+                
+                app.SavedFile.Enable         = 'off';
+                app.SavedFileButton.Enable   = 'off';
+            end
+        end
+
+        % Button pushed function: ThrDPos
+        function ThrDPosButtonPushed(app, event)
+            xs = app.Solution.xs;
+            ref = [app.refX.Value;app.refY.Value;app.refZ.Value];
+            [~,~,~,~,ThrD,~] = evaluate(xs,ref);
+            
+            % boundaries
+            st = ((app.PFrom.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            fn = ((app.PTo.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            t = app.Data.obs.ep(st:fn,1);
+            t = t./3600; % hour
+            
+            fig = figure('Name','3D Positioning Errors','NumberTitle','off','Color',[0.75 0.75 0.75]);
+            ax  = axes(fig);
+            plot(t,ThrD(:,1))
+            ax.Title.String = '3D Positioning Errors';
+            ax.XLabel.String = 'Time (Hour)';
+            ax.YLabel.String = 'Error (Meter)';
+            td = (t(end) - t(1))*0.1;
+            min1 = t(1)-td;
+            max1 = t(end)+td;
+            ax.XLim = [min1 max1];
+            ax.XGrid = 'on';
+            ax.YGrid = 'on';
+            legend(ax,'3D Positioning Error')
+        end
+
+        % Button pushed function: OrbitButton_B
+        function OrbitButton_BPushed(app, event)
+           [file,path] = uigetfile('*.sp3','Select the Orbit file');
+           if ischar(file)
+               orbitb = fullfile(path,file);
+               app.Orbit_B.Editable       = 'on';
+               app.Orbit_B.Value          = orbitb;
+               app.Orbit_B.Editable       = 'off';
+           else
+               return
+           end
+        end
+
+        % Button pushed function: OrbitButton_A
+        function OrbitButton_APushed(app, event)
+           [file,path] = uigetfile('*.sp3','Select the Orbit file');
+           if ischar(file)
+               orbita = fullfile(path,file);
+               app.Orbit_A.Editable       = 'on';
+               app.Orbit_A.Value          = orbita;
+               app.Orbit_A.Editable       = 'off';
+           else
+               return
+           end
+        end
+
+        % Selection changed function: ProcessingModeButtonGroup
+        function ProcessingModeButtonGroupSelectionChanged(app, event)
+            selectedButton = app.ProcessingModeButtonGroup.SelectedObject;
+            if strcmp(selectedButton.Text,'Kinematic')
+                app.PosNoise.Editable = 'on';
+                app.PosNoise2.Editable = 'on';
+            elseif strcmp(selectedButton.Text,'Static')
+                app.PosNoise.Value = 0;
+                app.PosNoise.Editable = 'off';
+                app.PosNoise2.Value = 0;
+                app.PosNoise2.Editable = 'off';
+            end
+        end
+
+        % Value changed function: Troposphere
+        function TroposphereValueChanged(app, event)
+            value = app.Troposphere.Value;
+            if value == 1
+                app.TroGrad.Enable = 'on';
+            else
+                app.TroGrad.Value  = 0;
+                app.TroGrad.Enable = 'off';
+            end
+        end
+
+        % Button pushed function: TZD
+        function TZDButtonPushed(app, event)
+            xs = app.Solution.xs;
+            model = app.Solution.model;
+            tzd = model(1,31) + xs(5,:)';
+            
+            % boundaries
+            st = ((app.PFrom.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            fn = ((app.PTo.Value - app.Data.obs.ep(1,1))/(app.Data.inf.time.int)) + 1;
+            t = app.Data.obs.ep(st:fn,1);
+            t = t./3600; % hour
+            
+            fig = figure('Name','Tropospheric Zenith Total Delay','NumberTitle','off','Color',[0.75 0.75 0.75]);
+            ax  = axes(fig);
+            plot(t,tzd)
+            ax.Title.String = 'Tropospheric Zenith Total Delay';
+            ax.XLabel.String = 'Time (Hour)';
+            ax.YLabel.String = 'Zenith Total Delay (Meter)';
+            ax.XGrid = 'on';
+            ax.YGrid = 'on';
+            legend(ax,'Zenith Total Delay')
+        end
+    end
+
+    % Component initialization
+    methods (Access = private)
+
+        % Create UIFigure and components
+        function createComponents(app)
+
+            % Create Main and hide until all components are created
+            app.Main = uifigure('Visible', 'off');
+            app.Main.AutoResizeChildren = 'off';
+            app.Main.Color = [0.8 0.8 0.8];
+            app.Main.Position = [100 100 688 522];
+            app.Main.Name = 'PPPH';
+            app.Main.Resize = 'off';
+
+            % Create Tabs
+            app.Tabs = uitabgroup(app.Main);
+            app.Tabs.AutoResizeChildren = 'off';
+            app.Tabs.Position = [1 114 688 365];
+
+            % Create Input
+            app.Input = uitab(app.Tabs);
+            app.Input.AutoResizeChildren = 'off';
+            app.Input.Title = 'DATA IMPORTING';
+            app.Input.BackgroundColor = [0.902 0.902 0.902];
+
+            % Create ObservationFileLabel
+            app.ObservationFileLabel = uilabel(app.Input);
+            app.ObservationFileLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.ObservationFileLabel.VerticalAlignment = 'top';
+            app.ObservationFileLabel.FontWeight = 'bold';
+            app.ObservationFileLabel.Position = [42 302 98 15];
+            app.ObservationFileLabel.Text = 'Observation File';
+
+            % Create Observation
+            app.Observation = uieditfield(app.Input, 'text');
+            app.Observation.Editable = 'off';
+            app.Observation.BackgroundColor = [0.902 0.902 0.902];
+            app.Observation.Position = [151 298 100 22];
+
+            % Create ClockSourceLabel
+            app.ClockSourceLabel = uilabel(app.Input);
+            app.ClockSourceLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.ClockSourceLabel.VerticalAlignment = 'top';
+            app.ClockSourceLabel.FontWeight = 'bold';
+            app.ClockSourceLabel.Position = [346 302 94 15];
+            app.ClockSourceLabel.Text = 'Clock Source';
+
+            % Create ClockDropDown
+            app.ClockDropDown = uidropdown(app.Input);
+            app.ClockDropDown.Items = {'Sp3 File', 'Clock File'};
+            app.ClockDropDown.ValueChangedFcn = createCallbackFcn(app, @ClockDropDownValueChanged, true);
+            app.ClockDropDown.BackgroundColor = [0.902 0.902 0.902];
+            app.ClockDropDown.Position = [455 298 125 22];
+            app.ClockDropDown.Value = 'Clock File';
+
+            % Create ClockFileLabel
+            app.ClockFileLabel = uilabel(app.Input);
+            app.ClockFileLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.ClockFileLabel.VerticalAlignment = 'top';
+            app.ClockFileLabel.FontWeight = 'bold';
+            app.ClockFileLabel.Position = [346 265 94 15];
+            app.ClockFileLabel.Text = 'Clock File';
+
+            % Create Clock
+            app.Clock = uieditfield(app.Input, 'text');
+            app.Clock.Editable = 'off';
+            app.Clock.BackgroundColor = [0.902 0.902 0.902];
+            app.Clock.Position = [455 261 100 22];
+
+            % Create AntennaFileEditFieldLabel
+            app.AntennaFileEditFieldLabel = uilabel(app.Input);
+            app.AntennaFileEditFieldLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.AntennaFileEditFieldLabel.VerticalAlignment = 'top';
+            app.AntennaFileEditFieldLabel.FontWeight = 'bold';
+            app.AntennaFileEditFieldLabel.Position = [346 112 94 15];
+            app.AntennaFileEditFieldLabel.Text = 'Antenna File';
+
+            % Create Antenna
+            app.Antenna = uieditfield(app.Input, 'text');
+            app.Antenna.Editable = 'off';
+            app.Antenna.BackgroundColor = [0.902 0.902 0.902];
+            app.Antenna.Position = [455 108 100 22];
+
+            % Create ObservationButton
+            app.ObservationButton = uibutton(app.Input, 'push');
+            app.ObservationButton.ButtonPushedFcn = createCallbackFcn(app, @ObservationButtonPushed, true);
+            app.ObservationButton.Icon = 'icon-folder-128.png';
+            app.ObservationButton.BackgroundColor = [0.902 0.902 0.902];
+            app.ObservationButton.Position = [250 298 26 22];
+            app.ObservationButton.Text = '';
+
+            % Create ClockButton
+            app.ClockButton = uibutton(app.Input, 'push');
+            app.ClockButton.ButtonPushedFcn = createCallbackFcn(app, @ClockButtonPushed, true);
+            app.ClockButton.Icon = 'icon-folder-128.png';
+            app.ClockButton.BackgroundColor = [0.902 0.902 0.902];
+            app.ClockButton.Position = [554 261 26 22];
+            app.ClockButton.Text = '';
+
+            % Create AntennaButton
+            app.AntennaButton = uibutton(app.Input, 'push');
+            app.AntennaButton.ButtonPushedFcn = createCallbackFcn(app, @AntennaButtonPushed, true);
+            app.AntennaButton.Icon = 'icon-folder-128.png';
+            app.AntennaButton.BackgroundColor = [0.902 0.902 0.902];
+            app.AntennaButton.Position = [554 108 26 22];
+            app.AntennaButton.Text = '';
+
+            % Create SaveAsButton
+            app.SaveAsButton = uibutton(app.Input, 'push');
+            app.SaveAsButton.ButtonPushedFcn = createCallbackFcn(app, @SaveAsButtonPushed, true);
+            app.SaveAsButton.BackgroundColor = [0.902 0.902 0.902];
+            app.SaveAsButton.FontWeight = 'bold';
+            app.SaveAsButton.Position = [482 38 100 22];
+            app.SaveAsButton.Text = 'Save As';
+
+            % Create ImportButton
+            app.ImportButton = uibutton(app.Input, 'push');
+            app.ImportButton.ButtonPushedFcn = createCallbackFcn(app, @ImportButtonPushed, true);
+            app.ImportButton.Icon = 'Import_B-128.png';
+            app.ImportButton.BackgroundColor = [0.902 0.902 0.902];
+            app.ImportButton.FontWeight = 'bold';
+            app.ImportButton.Position = [348 38 100 22];
+            app.ImportButton.Text = 'Import';
+
+            % Create SavedFileCB
+            app.SavedFileCB = uicheckbox(app.Input);
+            app.SavedFileCB.ValueChangedFcn = createCallbackFcn(app, @SavedFileCBValueChanged, true);
+            app.SavedFileCB.Text = 'Import previously saved file';
+            app.SavedFileCB.FontWeight = 'bold';
+            app.SavedFileCB.Position = [42 42 180 15];
+
+            % Create ChoosesavedfileLabel
+            app.ChoosesavedfileLabel = uilabel(app.Input);
+            app.ChoosesavedfileLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.ChoosesavedfileLabel.HorizontalAlignment = 'right';
+            app.ChoosesavedfileLabel.VerticalAlignment = 'top';
+            app.ChoosesavedfileLabel.Enable = 'off';
+            app.ChoosesavedfileLabel.Position = [42 16 103 15];
+            app.ChoosesavedfileLabel.Text = 'Choose saved file';
+
+            % Create SavedFile
+            app.SavedFile = uieditfield(app.Input, 'text');
+            app.SavedFile.Editable = 'off';
+            app.SavedFile.BackgroundColor = [0.902 0.902 0.902];
+            app.SavedFile.Enable = 'off';
+            app.SavedFile.Position = [160 12 100 22];
+
+            % Create SavedFileButton
+            app.SavedFileButton = uibutton(app.Input, 'push');
+            app.SavedFileButton.ButtonPushedFcn = createCallbackFcn(app, @SavedFileButtonPushed, true);
+            app.SavedFileButton.Icon = 'icon-folder-128.png';
+            app.SavedFileButton.Enable = 'off';
+            app.SavedFileButton.Position = [259 12 27 22];
+            app.SavedFileButton.Text = '';
+
+            % Create DCBButton
+            app.DCBButton = uibutton(app.Input, 'push');
+            app.DCBButton.ButtonPushedFcn = createCallbackFcn(app, @DCBButtonPushed, true);
+            app.DCBButton.Icon = 'icon-folder-128.png';
+            app.DCBButton.BackgroundColor = [0.902 0.902 0.902];
+            app.DCBButton.Enable = 'off';
+            app.DCBButton.Position = [554 150 26 22];
+            app.DCBButton.Text = '';
+
+            % Create DCBFileLabel
+            app.DCBFileLabel = uilabel(app.Input);
+            app.DCBFileLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.DCBFileLabel.VerticalAlignment = 'top';
+            app.DCBFileLabel.FontWeight = 'bold';
+            app.DCBFileLabel.Position = [346 154 55 15];
+            app.DCBFileLabel.Text = 'DCB File';
+
+            % Create DCB
+            app.DCB = uieditfield(app.Input, 'text');
+            app.DCB.Editable = 'off';
+            app.DCB.BackgroundColor = [0.902 0.902 0.902];
+            app.DCB.Enable = 'off';
+            app.DCB.Position = [455 150 100 22];
+
+            % Create DCBLabel
+            app.DCBLabel = uilabel(app.Input);
+            app.DCBLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.DCBLabel.VerticalAlignment = 'top';
+            app.DCBLabel.FontWeight = 'bold';
+            app.DCBLabel.Position = [346 191 32 15];
+            app.DCBLabel.Text = 'DCB';
+
+            % Create DCBDropDown
+            app.DCBDropDown = uidropdown(app.Input);
+            app.DCBDropDown.Items = {'P1 - C1', 'None'};
+            app.DCBDropDown.ValueChangedFcn = createCallbackFcn(app, @DCBDropDownValueChanged, true);
+            app.DCBDropDown.BackgroundColor = [0.902 0.902 0.902];
+            app.DCBDropDown.Position = [455 187 125 22];
+            app.DCBDropDown.Value = 'None';
+
+            % Create SystemSelectionLabel
+            app.SystemSelectionLabel = uilabel(app.Input);
+            app.SystemSelectionLabel.VerticalAlignment = 'top';
+            app.SystemSelectionLabel.FontWeight = 'bold';
+            app.SystemSelectionLabel.Position = [42 131 105 15];
+            app.SystemSelectionLabel.Text = 'System Selection';
+
+            % Create GPSCheckBox
+            app.GPSCheckBox = uicheckbox(app.Input);
+            app.GPSCheckBox.Text = 'GPS';
+            app.GPSCheckBox.Position = [42 109 47 15];
+            app.GPSCheckBox.Value = true;
+
+            % Create GLONASSCheckBox
+            app.GLONASSCheckBox = uicheckbox(app.Input);
+            app.GLONASSCheckBox.Text = 'GLONASS';
+            app.GLONASSCheckBox.Position = [123 109 80 15];
+
+            % Create GALILEOCheckBox
+            app.GALILEOCheckBox = uicheckbox(app.Input);
+            app.GALILEOCheckBox.Text = 'GALILEO';
+            app.GALILEOCheckBox.Position = [42 79 73 15];
+
+            % Create BEIDOUCheckBox
+            app.BEIDOUCheckBox = uicheckbox(app.Input);
+            app.BEIDOUCheckBox.Text = 'BEIDOU';
+            app.BEIDOUCheckBox.Position = [123 79 68 15];
+
+            % Create ClockFileIntervalEditFieldLabel
+            app.ClockFileIntervalEditFieldLabel = uilabel(app.Input);
+            app.ClockFileIntervalEditFieldLabel.Position = [417 228 102 15];
+            app.ClockFileIntervalEditFieldLabel.Text = 'Clock File Interval';
+
+            % Create ClockFileIntervalEditField
+            app.ClockFileIntervalEditField = uieditfield(app.Input, 'numeric');
+            app.ClockFileIntervalEditField.ValueDisplayFormat = '%.0f';
+            app.ClockFileIntervalEditField.Position = [540 224 40 22];
+            app.ClockFileIntervalEditField.Value = 30;
+
+            % Create OrbitFilesForPanel
+            app.OrbitFilesForPanel = uipanel(app.Input);
+            app.OrbitFilesForPanel.AutoResizeChildren = 'off';
+            app.OrbitFilesForPanel.Title = 'Orbit Files For';
+            app.OrbitFilesForPanel.BackgroundColor = [0.902 0.902 0.902];
+            app.OrbitFilesForPanel.FontWeight = 'bold';
+            app.OrbitFilesForPanel.Position = [38 150 256 143];
+
+            % Create OrbitButton
+            app.OrbitButton = uibutton(app.OrbitFilesForPanel, 'push');
+            app.OrbitButton.ButtonPushedFcn = createCallbackFcn(app, @OrbitButtonPushed, true);
+            app.OrbitButton.Icon = 'icon-folder-128.png';
+            app.OrbitButton.BackgroundColor = [0.902 0.902 0.902];
+            app.OrbitButton.Position = [212 95 26 22];
+            app.OrbitButton.Text = '';
+
+            % Create ObservationdayLabel
+            app.ObservationdayLabel = uilabel(app.OrbitFilesForPanel);
+            app.ObservationdayLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.ObservationdayLabel.VerticalAlignment = 'top';
+            app.ObservationdayLabel.Position = [4 99 94 15];
+            app.ObservationdayLabel.Text = 'Observation day';
+
+            % Create Orbit
+            app.Orbit = uieditfield(app.OrbitFilesForPanel, 'text');
+            app.Orbit.Editable = 'off';
+            app.Orbit.BackgroundColor = [0.902 0.902 0.902];
+            app.Orbit.Position = [113 95 100 22];
+
+            % Create OrbitButton_B
+            app.OrbitButton_B = uibutton(app.OrbitFilesForPanel, 'push');
+            app.OrbitButton_B.ButtonPushedFcn = createCallbackFcn(app, @OrbitButton_BPushed, true);
+            app.OrbitButton_B.Icon = 'icon-folder-128.png';
+            app.OrbitButton_B.BackgroundColor = [0.902 0.902 0.902];
+            app.OrbitButton_B.Position = [212 53 26 22];
+            app.OrbitButton_B.Text = '';
+
+            % Create PreviousdayLabel
+            app.PreviousdayLabel = uilabel(app.OrbitFilesForPanel);
+            app.PreviousdayLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.PreviousdayLabel.VerticalAlignment = 'top';
+            app.PreviousdayLabel.Position = [4 57 94 15];
+            app.PreviousdayLabel.Text = 'Previous day';
+
+            % Create Orbit_B
+            app.Orbit_B = uieditfield(app.OrbitFilesForPanel, 'text');
+            app.Orbit_B.Editable = 'off';
+            app.Orbit_B.BackgroundColor = [0.902 0.902 0.902];
+            app.Orbit_B.Position = [113 53 100 22];
+
+            % Create OrbitButton_A
+            app.OrbitButton_A = uibutton(app.OrbitFilesForPanel, 'push');
+            app.OrbitButton_A.ButtonPushedFcn = createCallbackFcn(app, @OrbitButton_APushed, true);
+            app.OrbitButton_A.Icon = 'icon-folder-128.png';
+            app.OrbitButton_A.BackgroundColor = [0.902 0.902 0.902];
+            app.OrbitButton_A.Position = [212 11 26 22];
+            app.OrbitButton_A.Text = '';
+
+            % Create NextdayLabel
+            app.NextdayLabel = uilabel(app.OrbitFilesForPanel);
+            app.NextdayLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.NextdayLabel.VerticalAlignment = 'top';
+            app.NextdayLabel.Position = [4 15 94 15];
+            app.NextdayLabel.Text = 'Next day';
+
+            % Create Orbit_A
+            app.Orbit_A = uieditfield(app.OrbitFilesForPanel, 'text');
+            app.Orbit_A.Editable = 'off';
+            app.Orbit_A.BackgroundColor = [0.902 0.902 0.902];
+            app.Orbit_A.Position = [113 11 100 22];
+
+            % Create secLabel
+            app.secLabel = uilabel(app.Input);
+            app.secLabel.VerticalAlignment = 'top';
+            app.secLabel.FontWeight = 'bold';
+            app.secLabel.Position = [583 228 26 15];
+            app.secLabel.Text = 'sec';
+
+            % Create Preprocess
+            app.Preprocess = uitab(app.Tabs);
+            app.Preprocess.AutoResizeChildren = 'off';
+            app.Preprocess.Title = 'PREPROCESSING';
+            app.Preprocess.BackgroundColor = [0.902 0.902 0.902];
+
+            % Create ElevationCutOffAngleLabel
+            app.ElevationCutOffAngleLabel = uilabel(app.Preprocess);
+            app.ElevationCutOffAngleLabel.VerticalAlignment = 'top';
+            app.ElevationCutOffAngleLabel.FontWeight = 'bold';
+            app.ElevationCutOffAngleLabel.Position = [56 270 138 15];
+            app.ElevationCutOffAngleLabel.Text = 'Elevation Cut-Off Angle';
+
+            % Create ElvAngle
+            app.ElvAngle = uieditfield(app.Preprocess, 'numeric');
+            app.ElvAngle.Limits = [0 90];
+            app.ElvAngle.ValueDisplayFormat = '%.0f';
+            app.ElvAngle.HorizontalAlignment = 'center';
+            app.ElvAngle.Position = [249 266 67 22];
+            app.ElvAngle.Value = 8;
+
+            % Create CycleSlipDetectionMethodsPanel
+            app.CycleSlipDetectionMethodsPanel = uipanel(app.Preprocess);
+            app.CycleSlipDetectionMethodsPanel.AutoResizeChildren = 'off';
+            app.CycleSlipDetectionMethodsPanel.BorderType = 'none';
+            app.CycleSlipDetectionMethodsPanel.Title = 'Cycle Slip Detection Methods';
+            app.CycleSlipDetectionMethodsPanel.BackgroundColor = [0.902 0.902 0.902];
+            app.CycleSlipDetectionMethodsPanel.FontWeight = 'bold';
+            app.CycleSlipDetectionMethodsPanel.Position = [56 116 260 110];
+
+            % Create MWCycle
+            app.MWCycle = uicheckbox(app.CycleSlipDetectionMethodsPanel);
+            app.MWCycle.Text = 'Melbourne-Wubbena Combination';
+            app.MWCycle.Position = [15 54 212 15];
+            app.MWCycle.Value = true;
+
+            % Create GFCycle
+            app.GFCycle = uicheckbox(app.CycleSlipDetectionMethodsPanel);
+            app.GFCycle.Text = 'Geometry-Free Combination';
+            app.GFCycle.Position = [15 20 177 15];
+            app.GFCycle.Value = true;
+
+            % Create ClockJumpCB
+            app.ClockJumpCB = uicheckbox(app.Preprocess);
+            app.ClockJumpCB.Text = 'Clock Jump Detection and Repairment';
+            app.ClockJumpCB.Position = [361 211 234 15];
+            app.ClockJumpCB.Value = true;
+
+            % Create CodeSmoothCB
+            app.CodeSmoothCB = uicheckbox(app.Preprocess);
+            app.CodeSmoothCB.Text = 'Code Smoothing Using Phase Observations';
+            app.CodeSmoothCB.Position = [361 156 265 15];
+
+            % Create ProcessingModeButtonGroup
+            app.ProcessingModeButtonGroup = uibuttongroup(app.Preprocess);
+            app.ProcessingModeButtonGroup.AutoResizeChildren = 'off';
+            app.ProcessingModeButtonGroup.SelectionChangedFcn = createCallbackFcn(app, @ProcessingModeButtonGroupSelectionChanged, true);
+            app.ProcessingModeButtonGroup.BorderType = 'none';
+            app.ProcessingModeButtonGroup.Title = 'Processing Mode';
+            app.ProcessingModeButtonGroup.BackgroundColor = [0.902 0.902 0.902];
+            app.ProcessingModeButtonGroup.FontWeight = 'bold';
+            app.ProcessingModeButtonGroup.Position = [60 37 123 80];
+
+            % Create StaticButton
+            app.StaticButton = uiradiobutton(app.ProcessingModeButtonGroup);
+            app.StaticButton.Text = 'Static';
+            app.StaticButton.Position = [11 35 52 15];
+            app.StaticButton.Value = true;
+
+            % Create KinematicButton
+            app.KinematicButton = uiradiobutton(app.ProcessingModeButtonGroup);
+            app.KinematicButton.Text = 'Kinematic';
+            app.KinematicButton.Position = [11 13 76 15];
+
+            % Create degreeLabel
+            app.degreeLabel = uilabel(app.Preprocess);
+            app.degreeLabel.VerticalAlignment = 'top';
+            app.degreeLabel.FontWeight = 'bold';
+            app.degreeLabel.Position = [317 270 45 15];
+            app.degreeLabel.Text = 'degree';
+
+            % Create Model
+            app.Model = uitab(app.Tabs);
+            app.Model.AutoResizeChildren = 'off';
+            app.Model.Title = 'MODELING OPTIONS';
+            app.Model.BackgroundColor = [0.902 0.902 0.902];
+
+            % Create SatellitePanel
+            app.SatellitePanel = uipanel(app.Model);
+            app.SatellitePanel.AutoResizeChildren = 'off';
+            app.SatellitePanel.BorderType = 'none';
+            app.SatellitePanel.Title = 'Satellite';
+            app.SatellitePanel.BackgroundColor = [0.902 0.902 0.902];
+            app.SatellitePanel.FontWeight = 'bold';
+            app.SatellitePanel.Position = [33 181 298 118];
+
+            % Create ClockOffset
+            app.ClockOffset = uicheckbox(app.SatellitePanel);
+            app.ClockOffset.Text = 'Clock Offset Correction';
+            app.ClockOffset.Position = [6 78 147 15];
+            app.ClockOffset.Value = true;
+
+            % Create MassCenter
+            app.MassCenter = uicheckbox(app.SatellitePanel);
+            app.MassCenter.Text = 'Mass Center to Antenna Phase Center Correction';
+            app.MassCenter.Position = [6 43 295 15];
+            app.MassCenter.Value = true;
+
+            % Create Windup
+            app.Windup = uicheckbox(app.SatellitePanel);
+            app.Windup.Text = 'Windup Correction';
+            app.Windup.Position = [6 8 124 15];
+            app.Windup.Value = true;
+
+            % Create ReceiverPanel
+            app.ReceiverPanel = uipanel(app.Model);
+            app.ReceiverPanel.AutoResizeChildren = 'off';
+            app.ReceiverPanel.BorderType = 'none';
+            app.ReceiverPanel.Title = 'Receiver';
+            app.ReceiverPanel.BackgroundColor = [0.902 0.902 0.902];
+            app.ReceiverPanel.FontWeight = 'bold';
+            app.ReceiverPanel.Position = [33 58 298 93];
+
+            % Create APC
+            app.APC = uicheckbox(app.ReceiverPanel);
+            app.APC.Text = 'Antenna Phase Center Correction';
+            app.APC.Position = [6 47 207 15];
+            app.APC.Value = true;
+
+            % Create ARP
+            app.ARP = uicheckbox(app.ReceiverPanel);
+            app.ARP.Text = 'Antenna Reference Point Correction';
+            app.ARP.Position = [7 12 220 15];
+            app.ARP.Value = true;
+
+            % Create Atmosphere
+            app.Atmosphere = uipanel(app.Model);
+            app.Atmosphere.AutoResizeChildren = 'off';
+            app.Atmosphere.BorderType = 'none';
+            app.Atmosphere.Title = 'Atmosphere';
+            app.Atmosphere.BackgroundColor = [0.902 0.902 0.902];
+            app.Atmosphere.FontWeight = 'bold';
+            app.Atmosphere.Position = [361 181 298 118];
+
+            % Create Troposphere
+            app.Troposphere = uicheckbox(app.Atmosphere);
+            app.Troposphere.ValueChangedFcn = createCallbackFcn(app, @TroposphereValueChanged, true);
+            app.Troposphere.Text = 'Trophospheric Correction';
+            app.Troposphere.Position = [9 78 161 15];
+            app.Troposphere.Value = true;
+
+            % Create Ionosphere
+            app.Ionosphere = uicheckbox(app.Atmosphere);
+            app.Ionosphere.Enable = 'off';
+            app.Ionosphere.Text = 'Ionospheric Correctiıon';
+            app.Ionosphere.Position = [9 8 149 15];
+
+            % Create TroGrad
+            app.TroGrad = uicheckbox(app.Atmosphere);
+            app.TroGrad.Text = 'Estimate Tropospheric Gradients';
+            app.TroGrad.Position = [9 43 201 15];
+
+            % Create OtherPanel
+            app.OtherPanel = uipanel(app.Model);
+            app.OtherPanel.AutoResizeChildren = 'off';
+            app.OtherPanel.BorderType = 'none';
+            app.OtherPanel.Title = 'Other';
+            app.OtherPanel.BackgroundColor = [0.902 0.902 0.902];
+            app.OtherPanel.FontWeight = 'bold';
+            app.OtherPanel.Position = [361 33 298 118];
+
+            % Create RelClock
+            app.RelClock = uicheckbox(app.OtherPanel);
+            app.RelClock.Text = 'Relativistic Clock Correction';
+            app.RelClock.Position = [9 71 175 15];
+            app.RelClock.Value = true;
+
+            % Create RelPath
+            app.RelPath = uicheckbox(app.OtherPanel);
+            app.RelPath.Text = 'Relativistic Path Range Correction';
+            app.RelPath.Position = [9 36 210 15];
+            app.RelPath.Value = true;
+
+            % Create SolidTide
+            app.SolidTide = uicheckbox(app.OtherPanel);
+            app.SolidTide.Text = 'Solid Tide Correction';
+            app.SolidTide.Position = [9 1 137 15];
+            app.SolidTide.Value = true;
+
+            % Create Filter
+            app.Filter = uitab(app.Tabs);
+            app.Filter.AutoResizeChildren = 'off';
+            app.Filter.Title = 'FILTERING OPTIONS';
+            app.Filter.BackgroundColor = [0.902 0.902 0.902];
+
+            % Create LSQR
+            app.LSQR = uicheckbox(app.Filter);
+            app.LSQR.ValueChangedFcn = createCallbackFcn(app, @LSQRValueChanged, true);
+            app.LSQR.Text = 'Determine Initial Parameters Using Least Squares';
+            app.LSQR.FontWeight = 'bold';
+            app.LSQR.Position = [26 307 312 15];
+
+            % Create InitialParameter
+            app.InitialParameter = uipanel(app.Filter);
+            app.InitialParameter.AutoResizeChildren = 'off';
+            app.InitialParameter.BorderType = 'none';
+            app.InitialParameter.Title = 'Select Initial Uncertainty Parameters';
+            app.InitialParameter.BackgroundColor = [0.902 0.902 0.902];
+            app.InitialParameter.FontWeight = 'bold';
+            app.InitialParameter.Position = [36 138 274 158];
+
+            % Create PositionEditFieldLabel
+            app.PositionEditFieldLabel = uilabel(app.InitialParameter);
+            app.PositionEditFieldLabel.Position = [9 118 49 15];
+            app.PositionEditFieldLabel.Text = 'Position';
+
+            % Create PosParameter
+            app.PosParameter = uieditfield(app.InitialParameter, 'numeric');
+            app.PosParameter.ValueDisplayFormat = '%.1f';
+            app.PosParameter.Position = [158 114 27 22];
+            app.PosParameter.Value = 1;
+
+            % Create ReceiverClockLabel
+            app.ReceiverClockLabel = uilabel(app.InitialParameter);
+            app.ReceiverClockLabel.Position = [9 94 88 15];
+            app.ReceiverClockLabel.Text = 'Receiver Clock';
+
+            % Create RecClkParameter
+            app.RecClkParameter = uieditfield(app.InitialParameter, 'numeric');
+            app.RecClkParameter.ValueDisplayFormat = '%.1f';
+            app.RecClkParameter.Position = [158 90 27 22];
+            app.RecClkParameter.Value = 1;
+
+            % Create TrophosphereLabel
+            app.TrophosphereLabel = uilabel(app.InitialParameter);
+            app.TrophosphereLabel.Position = [9 70 82 15];
+            app.TrophosphereLabel.Text = 'Trophosphere';
+
+            % Create TropParameter
+            app.TropParameter = uieditfield(app.InitialParameter, 'numeric');
+            app.TropParameter.ValueDisplayFormat = '%.1f';
+            app.TropParameter.Position = [158 66 27 22];
+            app.TropParameter.Value = 0.5;
+
+            % Create PhaseAmbiguitiesLabel
+            app.PhaseAmbiguitiesLabel = uilabel(app.InitialParameter);
+            app.PhaseAmbiguitiesLabel.Position = [9 44 122 15];
+            app.PhaseAmbiguitiesLabel.Text = 'Phase Ambiguities';
+
+            % Create AmbParameter
+            app.AmbParameter = uieditfield(app.InitialParameter, 'numeric');
+            app.AmbParameter.ValueDisplayFormat = '%.1f';
+            app.AmbParameter.Position = [158 42 27 22];
+            app.AmbParameter.Value = 2;
+
+            % Create PosLabel
+            app.PosLabel = uilabel(app.InitialParameter);
+            app.PosLabel.VerticalAlignment = 'top';
+            app.PosLabel.FontWeight = 'bold';
+            app.PosLabel.Position = [239 118 25 15];
+            app.PosLabel.Text = 'm';
+
+            % Create PosNoise2_2Label_2
+            app.PosNoise2_2Label_2 = uilabel(app.InitialParameter);
+            app.PosNoise2_2Label_2.VerticalAlignment = 'top';
+            app.PosNoise2_2Label_2.FontWeight = 'bold';
+            app.PosNoise2_2Label_2.Position = [196 118 25 15];
+            app.PosNoise2_2Label_2.Text = 'e';
+
+            % Create PosParameter2
+            app.PosParameter2 = uieditfield(app.InitialParameter, 'numeric');
+            app.PosParameter2.ValueDisplayFormat = '%.0f';
+            app.PosParameter2.Position = [208 114 27 22];
+            app.PosParameter2.Value = 2;
+
+            % Create RecClkLabel2
+            app.RecClkLabel2 = uilabel(app.InitialParameter);
+            app.RecClkLabel2.VerticalAlignment = 'top';
+            app.RecClkLabel2.FontWeight = 'bold';
+            app.RecClkLabel2.Position = [239 94 25 15];
+            app.RecClkLabel2.Text = 'm';
+
+            % Create PosParameter2_2Label
+            app.PosParameter2_2Label = uilabel(app.InitialParameter);
+            app.PosParameter2_2Label.VerticalAlignment = 'top';
+            app.PosParameter2_2Label.FontWeight = 'bold';
+            app.PosParameter2_2Label.Position = [196 94 25 15];
+            app.PosParameter2_2Label.Text = 'e';
+
+            % Create RecClkParameter2
+            app.RecClkParameter2 = uieditfield(app.InitialParameter, 'numeric');
+            app.RecClkParameter2.ValueDisplayFormat = '%.0f';
+            app.RecClkParameter2.Position = [208 90 27 22];
+            app.RecClkParameter2.Value = 5;
+
+            % Create tropLabel
+            app.tropLabel = uilabel(app.InitialParameter);
+            app.tropLabel.VerticalAlignment = 'top';
+            app.tropLabel.FontWeight = 'bold';
+            app.tropLabel.Position = [239 70 25 15];
+            app.tropLabel.Text = 'm';
+
+            % Create PosParameter2_3Label
+            app.PosParameter2_3Label = uilabel(app.InitialParameter);
+            app.PosParameter2_3Label.VerticalAlignment = 'top';
+            app.PosParameter2_3Label.FontWeight = 'bold';
+            app.PosParameter2_3Label.Position = [196 70 25 15];
+            app.PosParameter2_3Label.Text = 'e';
+
+            % Create TropParameter2
+            app.TropParameter2 = uieditfield(app.InitialParameter, 'numeric');
+            app.TropParameter2.ValueDisplayFormat = '%.0f';
+            app.TropParameter2.Position = [208 66 27 22];
+
+            % Create AmbLabel
+            app.AmbLabel = uilabel(app.InitialParameter);
+            app.AmbLabel.VerticalAlignment = 'top';
+            app.AmbLabel.FontWeight = 'bold';
+            app.AmbLabel.Position = [239 48 25 15];
+            app.AmbLabel.Text = 'm';
+
+            % Create PosParameter2_4Label
+            app.PosParameter2_4Label = uilabel(app.InitialParameter);
+            app.PosParameter2_4Label.VerticalAlignment = 'top';
+            app.PosParameter2_4Label.FontWeight = 'bold';
+            app.PosParameter2_4Label.Position = [196 46 25 15];
+            app.PosParameter2_4Label.Text = 'e';
+
+            % Create AmbParameter2
+            app.AmbParameter2 = uieditfield(app.InitialParameter, 'numeric');
+            app.AmbParameter2.ValueDisplayFormat = '%.0f';
+            app.AmbParameter2.Position = [208 42 27 22];
+            app.AmbParameter2.Value = 1;
+
+            % Create SystemTimeDifferenceLabel
+            app.SystemTimeDifferenceLabel = uilabel(app.InitialParameter);
+            app.SystemTimeDifferenceLabel.Position = [9 22 134 15];
+            app.SystemTimeDifferenceLabel.Text = 'System Time Difference';
+
+            % Create STDParameter
+            app.STDParameter = uieditfield(app.InitialParameter, 'numeric');
+            app.STDParameter.ValueDisplayFormat = '%.1f';
+            app.STDParameter.HorizontalAlignment = 'center';
+            app.STDParameter.Position = [158 18 27 22];
+            app.STDParameter.Value = 1;
+
+            % Create AmbParameter2_2Label
+            app.AmbParameter2_2Label = uilabel(app.InitialParameter);
+            app.AmbParameter2_2Label.VerticalAlignment = 'top';
+            app.AmbParameter2_2Label.FontWeight = 'bold';
+            app.AmbParameter2_2Label.Position = [196 22 25 15];
+            app.AmbParameter2_2Label.Text = 'e';
+
+            % Create STDParameter2
+            app.STDParameter2 = uieditfield(app.InitialParameter, 'numeric');
+            app.STDParameter2.ValueDisplayFormat = '%.0f';
+            app.STDParameter2.Position = [208 18 27 22];
+            app.STDParameter2.Value = 2;
+
+            % Create STDLabel
+            app.STDLabel = uilabel(app.InitialParameter);
+            app.STDLabel.VerticalAlignment = 'top';
+            app.STDLabel.FontWeight = 'bold';
+            app.STDLabel.Position = [239 22 25 15];
+            app.STDLabel.Text = 'm';
+
+            % Create ProcessParametrer
+            app.ProcessParametrer = uipanel(app.Filter);
+            app.ProcessParametrer.AutoResizeChildren = 'off';
+            app.ProcessParametrer.BorderType = 'none';
+            app.ProcessParametrer.Title = 'Select Process Uncertainty Parameters';
+            app.ProcessParametrer.BackgroundColor = [0.902 0.902 0.902];
+            app.ProcessParametrer.FontWeight = 'bold';
+            app.ProcessParametrer.Position = [350 138 285 158];
+
+            % Create PosParameter_2Label
+            app.PosParameter_2Label = uilabel(app.ProcessParametrer);
+            app.PosParameter_2Label.VerticalAlignment = 'top';
+            app.PosParameter_2Label.Position = [10 114 49 15];
+            app.PosParameter_2Label.Text = 'Position';
+
+            % Create PosNoise
+            app.PosNoise = uieditfield(app.ProcessParametrer, 'numeric');
+            app.PosNoise.ValueDisplayFormat = '%.1f';
+            app.PosNoise.Editable = 'off';
+            app.PosNoise.Position = [149 110 27 22];
+
+            % Create RecClkParameter_2Label
+            app.RecClkParameter_2Label = uilabel(app.ProcessParametrer);
+            app.RecClkParameter_2Label.VerticalAlignment = 'top';
+            app.RecClkParameter_2Label.Position = [10 90 88 15];
+            app.RecClkParameter_2Label.Text = 'Receiver Clock';
+
+            % Create RecClkNoise
+            app.RecClkNoise = uieditfield(app.ProcessParametrer, 'numeric');
+            app.RecClkNoise.ValueDisplayFormat = '%.13f';
+            app.RecClkNoise.Position = [149 86 27 22];
+            app.RecClkNoise.Value = 1;
+
+            % Create TropParameter_2Label
+            app.TropParameter_2Label = uilabel(app.ProcessParametrer);
+            app.TropParameter_2Label.VerticalAlignment = 'top';
+            app.TropParameter_2Label.Position = [10 66 82 15];
+            app.TropParameter_2Label.Text = 'Trophosphere';
+
+            % Create TropNoise
+            app.TropNoise = uieditfield(app.ProcessParametrer, 'numeric');
+            app.TropNoise.ValueDisplayFormat = '%.1f';
+            app.TropNoise.Position = [149 62 27 22];
+            app.TropNoise.Value = 1;
+
+            % Create AmbParameter_2Label
+            app.AmbParameter_2Label = uilabel(app.ProcessParametrer);
+            app.AmbParameter_2Label.VerticalAlignment = 'top';
+            app.AmbParameter_2Label.Position = [10 42 107 15];
+            app.AmbParameter_2Label.Text = 'Phase Ambiguities';
+
+            % Create AmbNoise
+            app.AmbNoise = uieditfield(app.ProcessParametrer, 'numeric');
+            app.AmbNoise.ValueDisplayFormat = '%.1f';
+            app.AmbNoise.Editable = 'off';
+            app.AmbNoise.Position = [149 38 27 22];
+
+            % Create PosNoise2_2Label
+            app.PosNoise2_2Label = uilabel(app.ProcessParametrer);
+            app.PosNoise2_2Label.VerticalAlignment = 'top';
+            app.PosNoise2_2Label.FontWeight = 'bold';
+            app.PosNoise2_2Label.Position = [187 90 25 15];
+            app.PosNoise2_2Label.Text = 'e';
+
+            % Create RecClkNoise2
+            app.RecClkNoise2 = uieditfield(app.ProcessParametrer, 'numeric');
+            app.RecClkNoise2.Position = [201 86 27 22];
+            app.RecClkNoise2.Value = 5;
+
+            % Create PosNoise2_3Label
+            app.PosNoise2_3Label = uilabel(app.ProcessParametrer);
+            app.PosNoise2_3Label.VerticalAlignment = 'top';
+            app.PosNoise2_3Label.FontWeight = 'bold';
+            app.PosNoise2_3Label.Position = [187 66 25 15];
+            app.PosNoise2_3Label.Text = 'e';
+
+            % Create TropNoise2
+            app.TropNoise2 = uieditfield(app.ProcessParametrer, 'numeric');
+            app.TropNoise2.Position = [201 62 27 22];
+            app.TropNoise2.Value = -9;
+
+            % Create PosNoise2_4Label
+            app.PosNoise2_4Label = uilabel(app.ProcessParametrer);
+            app.PosNoise2_4Label.VerticalAlignment = 'top';
+            app.PosNoise2_4Label.FontWeight = 'bold';
+            app.PosNoise2_4Label.Position = [187 42 25 15];
+            app.PosNoise2_4Label.Text = 'e';
+
+            % Create AmbNoise2
+            app.AmbNoise2 = uieditfield(app.ProcessParametrer, 'numeric');
+            app.AmbNoise2.Editable = 'off';
+            app.AmbNoise2.Position = [201 38 27 22];
+
+            % Create PosNLabel
+            app.PosNLabel = uilabel(app.ProcessParametrer);
+            app.PosNLabel.VerticalAlignment = 'top';
+            app.PosNLabel.FontWeight = 'bold';
+            app.PosNLabel.Position = [239 114 47 15];
+            app.PosNLabel.Text = 'm2/sec';
+
+            % Create RecClkNLabel
+            app.RecClkNLabel = uilabel(app.ProcessParametrer);
+            app.RecClkNLabel.VerticalAlignment = 'top';
+            app.RecClkNLabel.FontWeight = 'bold';
+            app.RecClkNLabel.Position = [239 90 47 15];
+            app.RecClkNLabel.Text = 'm2/sec';
+
+            % Create TropNLabel
+            app.TropNLabel = uilabel(app.ProcessParametrer);
+            app.TropNLabel.VerticalAlignment = 'top';
+            app.TropNLabel.FontWeight = 'bold';
+            app.TropNLabel.Position = [239 68 47 15];
+            app.TropNLabel.Text = 'm2/sec';
+
+            % Create AmbNLabel
+            app.AmbNLabel = uilabel(app.ProcessParametrer);
+            app.AmbNLabel.VerticalAlignment = 'top';
+            app.AmbNLabel.FontWeight = 'bold';
+            app.AmbNLabel.Position = [239 42 47 15];
+            app.AmbNLabel.Text = 'm2/sec';
+
+            % Create STDNLabel
+            app.STDNLabel = uilabel(app.ProcessParametrer);
+            app.STDNLabel.VerticalAlignment = 'top';
+            app.STDNLabel.FontWeight = 'bold';
+            app.STDNLabel.Position = [239 18 47 15];
+            app.STDNLabel.Text = 'm2/sec';
+
+            % Create SystemTimeDifferenceLabel_2
+            app.SystemTimeDifferenceLabel_2 = uilabel(app.ProcessParametrer);
+            app.SystemTimeDifferenceLabel_2.VerticalAlignment = 'top';
+            app.SystemTimeDifferenceLabel_2.Position = [10 18 134 15];
+            app.SystemTimeDifferenceLabel_2.Text = 'System Time Difference';
+
+            % Create STDNoise
+            app.STDNoise = uieditfield(app.ProcessParametrer, 'numeric');
+            app.STDNoise.ValueDisplayFormat = '%.1f';
+            app.STDNoise.Position = [149 14 27 22];
+            app.STDNoise.Value = 1;
+
+            % Create AmbNoise2_2Label
+            app.AmbNoise2_2Label = uilabel(app.ProcessParametrer);
+            app.AmbNoise2_2Label.VerticalAlignment = 'top';
+            app.AmbNoise2_2Label.FontWeight = 'bold';
+            app.AmbNoise2_2Label.Position = [187 18 25 15];
+            app.AmbNoise2_2Label.Text = 'e';
+
+            % Create STDNoise2
+            app.STDNoise2 = uieditfield(app.ProcessParametrer, 'numeric');
+            app.STDNoise2.Position = [201 14 27 22];
+            app.STDNoise2.Value = -7;
+
+            % Create AmbNoise2_2Label_2
+            app.AmbNoise2_2Label_2 = uilabel(app.ProcessParametrer);
+            app.AmbNoise2_2Label_2.VerticalAlignment = 'top';
+            app.AmbNoise2_2Label_2.FontWeight = 'bold';
+            app.AmbNoise2_2Label_2.Position = [187 114 25 15];
+            app.AmbNoise2_2Label_2.Text = 'e';
+
+            % Create PosNoise2
+            app.PosNoise2 = uieditfield(app.ProcessParametrer, 'numeric');
+            app.PosNoise2.Editable = 'off';
+            app.PosNoise2.Position = [201 110 27 22];
+
+            % Create XEditFieldLabel
+            app.XEditFieldLabel = uilabel(app.Filter);
+            app.XEditFieldLabel.VerticalAlignment = 'top';
+            app.XEditFieldLabel.Position = [150 84 25 15];
+            app.XEditFieldLabel.Text = 'X';
+
+            % Create AprioriX
+            app.AprioriX = uieditfield(app.Filter, 'numeric');
+            app.AprioriX.ValueDisplayFormat = '%10.3f';
+            app.AprioriX.Editable = 'off';
+            app.AprioriX.Position = [189 80 86 22];
+
+            % Create MeasurementOption
+            app.MeasurementOption = uipanel(app.Filter);
+            app.MeasurementOption.AutoResizeChildren = 'off';
+            app.MeasurementOption.BorderType = 'none';
+            app.MeasurementOption.Title = 'Measurement Noise and Weight';
+            app.MeasurementOption.BackgroundColor = [0.902 0.902 0.902];
+            app.MeasurementOption.FontWeight = 'bold';
+            app.MeasurementOption.Position = [350 18 286 111];
+
+            % Create WeightMethodLabel
+            app.WeightMethodLabel = uilabel(app.MeasurementOption);
+            app.WeightMethodLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.WeightMethodLabel.HorizontalAlignment = 'right';
+            app.WeightMethodLabel.VerticalAlignment = 'top';
+            app.WeightMethodLabel.Position = [2 64 87 15];
+            app.WeightMethodLabel.Text = 'Weight Method';
+
+            % Create MeasWeight
+            app.MeasWeight = uidropdown(app.MeasurementOption);
+            app.MeasWeight.Items = {'Equal', 'Elevation Dependent'};
+            app.MeasWeight.BackgroundColor = [0.902 0.902 0.902];
+            app.MeasWeight.Position = [104 60 147 22];
+            app.MeasWeight.Value = 'Elevation Dependent';
+
+            % Create MeasNoiseLabel
+            app.MeasNoiseLabel = uilabel(app.MeasurementOption);
+            app.MeasNoiseLabel.VerticalAlignment = 'top';
+            app.MeasNoiseLabel.Position = [2 37 200 15];
+            app.MeasNoiseLabel.Text = 'Measurement Standart Deviation';
+
+            % Create CodeMeasLabel
+            app.CodeMeasLabel = uilabel(app.MeasurementOption);
+            app.CodeMeasLabel.VerticalAlignment = 'top';
+            app.CodeMeasLabel.Position = [11 6 71 15];
+            app.CodeMeasLabel.Text = 'Code Meas.';
+
+            % Create CodeMeas
+            app.CodeMeas = uieditfield(app.MeasurementOption, 'numeric');
+            app.CodeMeas.ValueDisplayFormat = '%5.3f';
+            app.CodeMeas.Position = [81 2 43 22];
+            app.CodeMeas.Value = 3;
+
+            % Create PhaseMeasLabel
+            app.PhaseMeasLabel = uilabel(app.MeasurementOption);
+            app.PhaseMeasLabel.VerticalAlignment = 'top';
+            app.PhaseMeasLabel.Position = [149 6 76 15];
+            app.PhaseMeasLabel.Text = 'Phase Meas.';
+
+            % Create PhaseMeas
+            app.PhaseMeas = uieditfield(app.MeasurementOption, 'numeric');
+            app.PhaseMeas.ValueDisplayFormat = '%5.3f';
+            app.PhaseMeas.Position = [224 2 45 22];
+            app.PhaseMeas.Value = 0.003;
+
+            % Create mLabel
+            app.mLabel = uilabel(app.MeasurementOption);
+            app.mLabel.VerticalAlignment = 'top';
+            app.mLabel.FontWeight = 'bold';
+            app.mLabel.Position = [127 6 25 15];
+            app.mLabel.Text = 'm';
+
+            % Create APrioriPositionSourceDropDownLabel
+            app.APrioriPositionSourceDropDownLabel = uilabel(app.Filter);
+            app.APrioriPositionSourceDropDownLabel.BackgroundColor = [0.902 0.902 0.902];
+            app.APrioriPositionSourceDropDownLabel.VerticalAlignment = 'top';
+            app.APrioriPositionSourceDropDownLabel.FontWeight = 'bold';
+            app.APrioriPositionSourceDropDownLabel.Position = [29 111 141 15];
+            app.APrioriPositionSourceDropDownLabel.Text = 'A Priori Position Source';
+
+            % Create AprioriPosDD
+            app.AprioriPosDD = uidropdown(app.Filter);
+            app.AprioriPosDD.Items = {'RINEX', 'Specify'};
+            app.AprioriPosDD.ValueChangedFcn = createCallbackFcn(app, @AprioriPosDDValueChanged, true);
+            app.AprioriPosDD.BackgroundColor = [0.902 0.902 0.902];
+            app.AprioriPosDD.Position = [178 107 100 22];
+            app.AprioriPosDD.Value = 'RINEX';
+
+            % Create YLabel
+            app.YLabel = uilabel(app.Filter);
+            app.YLabel.VerticalAlignment = 'top';
+            app.YLabel.Position = [150 57 25 15];
+            app.YLabel.Text = 'Y';
+
+            % Create AprioriY
+            app.AprioriY = uieditfield(app.Filter, 'numeric');
+            app.AprioriY.ValueDisplayFormat = '%10.3f';
+            app.AprioriY.Editable = 'off';
+            app.AprioriY.Position = [189 53 86 22];
+
+            % Create ZLabel
+            app.ZLabel = uilabel(app.Filter);
+            app.ZLabel.VerticalAlignment = 'top';
+            app.ZLabel.Position = [150 30 25 15];
+            app.ZLabel.Text = 'Z';
+
+            % Create AprioriZ
+            app.AprioriZ = uieditfield(app.Filter, 'numeric');
+            app.AprioriZ.ValueDisplayFormat = '%10.3f';
+            app.AprioriZ.Editable = 'off';
+            app.AprioriZ.Position = [189 26 86 22];
+
+            % Create mLabel_2
+            app.mLabel_2 = uilabel(app.Filter);
+            app.mLabel_2.VerticalAlignment = 'top';
+            app.mLabel_2.FontWeight = 'bold';
+            app.mLabel_2.Position = [620 23 25 15];
+            app.mLabel_2.Text = 'm';
+
+            % Create Analysis
+            app.Analysis = uitab(app.Tabs);
+            app.Analysis.AutoResizeChildren = 'off';
+            app.Analysis.Title = 'ANALYSIS';
+            app.Analysis.BackgroundColor = [0.902 0.902 0.902];
+
+            % Create XLabel
+            app.XLabel = uilabel(app.Analysis);
+            app.XLabel.VerticalAlignment = 'top';
+            app.XLabel.Position = [79 265 25 15];
+            app.XLabel.Text = 'X';
+
+            % Create refX
+            app.refX = uieditfield(app.Analysis, 'numeric');
+            app.refX.ValueDisplayFormat = '%.3f';
+            app.refX.Position = [119 261 100 22];
+
+            % Create YLabel_2
+            app.YLabel_2 = uilabel(app.Analysis);
+            app.YLabel_2.VerticalAlignment = 'top';
+            app.YLabel_2.Position = [79 236 25 15];
+            app.YLabel_2.Text = 'Y';
+
+            % Create refY
+            app.refY = uieditfield(app.Analysis, 'numeric');
+            app.refY.ValueDisplayFormat = '%.3f';
+            app.refY.Position = [119 232 100 22];
+
+            % Create ZLabel_2
+            app.ZLabel_2 = uilabel(app.Analysis);
+            app.ZLabel_2.VerticalAlignment = 'top';
+            app.ZLabel_2.Position = [79 206 25 15];
+            app.ZLabel_2.Text = 'Z';
+
+            % Create refZ
+            app.refZ = uieditfield(app.Analysis, 'numeric');
+            app.refZ.ValueDisplayFormat = '%.3f';
+            app.refZ.Position = [119 202 100 22];
+
+            % Create RFL
+            app.RFL = uilabel(app.Analysis);
+            app.RFL.VerticalAlignment = 'top';
+            app.RFL.FontWeight = 'bold';
+            app.RFL.Position = [79 295 80 15];
+            app.RFL.Text = 'Ground Truth';
+
+            % Create NEU
+            app.NEU = uibutton(app.Analysis, 'push');
+            app.NEU.ButtonPushedFcn = createCallbackFcn(app, @NEUButtonPushed, true);
+            app.NEU.BackgroundColor = [0.902 0.902 0.902];
+            app.NEU.FontWeight = 'bold';
+            app.NEU.Enable = 'off';
+            app.NEU.Position = [245 132 140 22];
+            app.NEU.Text = 'NEU Positioning Error';
+
+            % Create PI
+            app.PI = uilabel(app.Analysis);
+            app.PI.VerticalAlignment = 'top';
+            app.PI.FontWeight = 'bold';
+            app.PI.Position = [79 169 120 15];
+            app.PI.Text = 'Choose Plot Interval';
+
+            % Create FromEditField_2Label
+            app.FromEditField_2Label = uilabel(app.Analysis);
+            app.FromEditField_2Label.VerticalAlignment = 'top';
+            app.FromEditField_2Label.Position = [79 136 33 15];
+            app.FromEditField_2Label.Text = 'From';
+
+            % Create PFrom
+            app.PFrom = uieditfield(app.Analysis, 'numeric');
+            app.PFrom.ValueDisplayFormat = '%.0f';
+            app.PFrom.Position = [138 132 57 22];
+
+            % Create ToLabel
+            app.ToLabel = uilabel(app.Analysis);
+            app.ToLabel.VerticalAlignment = 'top';
+            app.ToLabel.Position = [79 104 25 15];
+            app.ToLabel.Text = 'To';
+
+            % Create PTo
+            app.PTo = uieditfield(app.Analysis, 'numeric');
+            app.PTo.ValueDisplayFormat = '%.0f';
+            app.PTo.Position = [138 100 56 22];
+            app.PTo.Value = 86370;
+
+            % Create AL
+            app.AL = uilabel(app.Analysis);
+            app.AL.VerticalAlignment = 'top';
+            app.AL.FontWeight = 'bold';
+            app.AL.Position = [339 295 92 15];
+            app.AL.Text = 'Pos. Error (cm)';
+
+            % Create NorthEditFieldLabel
+            app.NorthEditFieldLabel = uilabel(app.Analysis);
+            app.NorthEditFieldLabel.VerticalAlignment = 'top';
+            app.NorthEditFieldLabel.Position = [339 265 35 15];
+            app.NorthEditFieldLabel.Text = 'North';
+
+            % Create AN
+            app.AN = uieditfield(app.Analysis, 'numeric');
+            app.AN.ValueDisplayFormat = '%3.1f';
+            app.AN.Editable = 'off';
+            app.AN.Position = [373 261 48 22];
+
+            % Create EastEditFieldLabel
+            app.EastEditFieldLabel = uilabel(app.Analysis);
+            app.EastEditFieldLabel.VerticalAlignment = 'top';
+            app.EastEditFieldLabel.Position = [339 236 29 15];
+            app.EastEditFieldLabel.Text = 'East';
+
+            % Create AE
+            app.AE = uieditfield(app.Analysis, 'numeric');
+            app.AE.ValueDisplayFormat = '%3.1f';
+            app.AE.Editable = 'off';
+            app.AE.Position = [373 232 48 22];
+
+            % Create UpLabel
+            app.UpLabel = uilabel(app.Analysis);
+            app.UpLabel.VerticalAlignment = 'top';
+            app.UpLabel.Position = [339 206 25 15];
+            app.UpLabel.Text = 'Up';
+
+            % Create AU
+            app.AU = uieditfield(app.Analysis, 'numeric');
+            app.AU.ValueDisplayFormat = '%3.1f';
+            app.AU.Editable = 'off';
+            app.AU.Position = [373 202 48 22];
+
+            % Create RMSL
+            app.RMSL = uilabel(app.Analysis);
+            app.RMSL.VerticalAlignment = 'top';
+            app.RMSL.FontWeight = 'bold';
+            app.RMSL.Position = [431 295 61 15];
+            app.RMSL.Text = 'RMS (cm)';
+
+            % Create NorthEditFieldLabel_2
+            app.NorthEditFieldLabel_2 = uilabel(app.Analysis);
+            app.NorthEditFieldLabel_2.VerticalAlignment = 'top';
+            app.NorthEditFieldLabel_2.Position = [431 265 35 15];
+            app.NorthEditFieldLabel_2.Text = 'North';
+
+            % Create RN
+            app.RN = uieditfield(app.Analysis, 'numeric');
+            app.RN.ValueDisplayFormat = '%3.1f';
+            app.RN.Editable = 'off';
+            app.RN.Position = [465 261 48 22];
+
+            % Create EastEditFieldLabel_2
+            app.EastEditFieldLabel_2 = uilabel(app.Analysis);
+            app.EastEditFieldLabel_2.VerticalAlignment = 'top';
+            app.EastEditFieldLabel_2.Position = [431 236 29 15];
+            app.EastEditFieldLabel_2.Text = 'East';
+
+            % Create RE
+            app.RE = uieditfield(app.Analysis, 'numeric');
+            app.RE.ValueDisplayFormat = '%3.1f';
+            app.RE.Editable = 'off';
+            app.RE.Position = [465 232 48 22];
+
+            % Create UpLabel_2
+            app.UpLabel_2 = uilabel(app.Analysis);
+            app.UpLabel_2.VerticalAlignment = 'top';
+            app.UpLabel_2.Position = [431 206 25 15];
+            app.UpLabel_2.Text = 'Up';
+
+            % Create RU
+            app.RU = uieditfield(app.Analysis, 'numeric');
+            app.RU.ValueDisplayFormat = '%3.1f';
+            app.RU.Editable = 'off';
+            app.RU.Position = [465 202 48 22];
+
+            % Create CTL
+            app.CTL = uilabel(app.Analysis);
+            app.CTL.VerticalAlignment = 'top';
+            app.CTL.FontWeight = 'bold';
+            app.CTL.Position = [523 295 159 15];
+            app.CTL.Text = 'Convergence Time (epoch)';
+
+            % Create CTLabel
+            app.CTLabel = uilabel(app.Analysis);
+            app.CTLabel.VerticalAlignment = 'top';
+            app.CTLabel.Position = [523 265 25 15];
+            app.CTLabel.Text = 'CT';
+
+            % Create CT
+            app.CT = uieditfield(app.Analysis, 'numeric');
+            app.CT.ValueDisplayFormat = '%.0f';
+            app.CT.Editable = 'off';
+            app.CT.Position = [557 261 48 22];
+
+            % Create CalculateButton
+            app.CalculateButton = uibutton(app.Analysis, 'push');
+            app.CalculateButton.ButtonPushedFcn = createCallbackFcn(app, @CalculateButtonPushed, true);
+            app.CalculateButton.BackgroundColor = [0.902 0.902 0.902];
+            app.CalculateButton.FontWeight = 'bold';
+            app.CalculateButton.Enable = 'off';
+            app.CalculateButton.Position = [229 229 100 25];
+            app.CalculateButton.Text = 'Calculate';
+
+            % Create HOR
+            app.HOR = uibutton(app.Analysis, 'push');
+            app.HOR.ButtonPushedFcn = createCallbackFcn(app, @HORButtonPushed, true);
+            app.HOR.BackgroundColor = [0.902 0.902 0.902];
+            app.HOR.FontWeight = 'bold';
+            app.HOR.Enable = 'off';
+            app.HOR.Position = [245 95 172 22];
+            app.HOR.Text = 'Horizontal Positioning Error';
+
+            % Create SNO
+            app.SNO = uibutton(app.Analysis, 'push');
+            app.SNO.ButtonPushedFcn = createCallbackFcn(app, @SNOButtonPushed, true);
+            app.SNO.BackgroundColor = [0.902 0.902 0.902];
+            app.SNO.FontWeight = 'bold';
+            app.SNO.Enable = 'off';
+            app.SNO.Position = [457 95 110 22];
+            app.SNO.Text = 'Satellite Number';
+
+            % Create PDOP
+            app.PDOP = uibutton(app.Analysis, 'push');
+            app.PDOP.ButtonPushedFcn = createCallbackFcn(app, @PDOPButtonPushed, true);
+            app.PDOP.BackgroundColor = [0.902 0.902 0.902];
+            app.PDOP.FontWeight = 'bold';
+            app.PDOP.Enable = 'off';
+            app.PDOP.Position = [457 58 129 22];
+            app.PDOP.Text = 'Dilution of Precision';
+
+            % Create ThrDPos
+            app.ThrDPos = uibutton(app.Analysis, 'push');
+            app.ThrDPos.ButtonPushedFcn = createCallbackFcn(app, @ThrDPosButtonPushed, true);
+            app.ThrDPos.HorizontalAlignment = 'left';
+            app.ThrDPos.BackgroundColor = [0.902 0.902 0.902];
+            app.ThrDPos.FontWeight = 'bold';
+            app.ThrDPos.Enable = 'off';
+            app.ThrDPos.Position = [245 58 130 22];
+            app.ThrDPos.Text = '3D Positioning Error';
+
+            % Create RecClkEst
+            app.RecClkEst = uibutton(app.Analysis, 'push');
+            app.RecClkEst.ButtonPushedFcn = createCallbackFcn(app, @RecClkEstButtonPushed, true);
+            app.RecClkEst.BackgroundColor = [0.902 0.902 0.902];
+            app.RecClkEst.FontWeight = 'bold';
+            app.RecClkEst.Enable = 'off';
+            app.RecClkEst.Position = [457 132 167 22];
+            app.RecClkEst.Text = 'Receiver Clock Estimation';
+
+            % Create TZD
+            app.TZD = uibutton(app.Analysis, 'push');
+            app.TZD.ButtonPushedFcn = createCallbackFcn(app, @TZDButtonPushed, true);
+            app.TZD.BackgroundColor = [0.902 0.902 0.902];
+            app.TZD.FontWeight = 'bold';
+            app.TZD.Enable = 'off';
+            app.TZD.Position = [245 21 196 22];
+            app.TZD.Text = 'Tropospheric Zenith Total Delay';
+
+            % Create MainLabel
+            app.MainLabel = uilabel(app.Main);
+            app.MainLabel.HorizontalAlignment = 'center';
+            app.MainLabel.VerticalAlignment = 'top';
+            app.MainLabel.FontSize = 20;
+            app.MainLabel.FontWeight = 'bold';
+            app.MainLabel.Position = [318 488 60 26];
+            app.MainLabel.Text = 'PPPH';
+
+            % Create RunButton
+            app.RunButton = uibutton(app.Main, 'push');
+            app.RunButton.ButtonPushedFcn = createCallbackFcn(app, @RunButtonPushed, true);
+            app.RunButton.Icon = 'play_button-512.png';
+            app.RunButton.HorizontalAlignment = 'left';
+            app.RunButton.BackgroundColor = [0.902 0.902 0.902];
+            app.RunButton.FontSize = 18;
+            app.RunButton.FontWeight = 'bold';
+            app.RunButton.Position = [555 51 89 30];
+            app.RunButton.Text = 'RUN';
+
+            % Create SaveConfigurationButton
+            app.SaveConfigurationButton = uibutton(app.Main, 'push');
+            app.SaveConfigurationButton.ButtonPushedFcn = createCallbackFcn(app, @SaveConfigurationButtonPushed, true);
+            app.SaveConfigurationButton.BackgroundColor = [0.902 0.902 0.902];
+            app.SaveConfigurationButton.Position = [43 68 124 22];
+            app.SaveConfigurationButton.Text = 'Save Configuration';
+
+            % Create DefaultConfigurationButton
+            app.DefaultConfigurationButton = uibutton(app.Main, 'push');
+            app.DefaultConfigurationButton.ButtonPushedFcn = createCallbackFcn(app, @DefaultConfigurationButtonPushed, true);
+            app.DefaultConfigurationButton.BackgroundColor = [0.902 0.902 0.902];
+            app.DefaultConfigurationButton.Position = [176 68 136 22];
+            app.DefaultConfigurationButton.Text = 'Default Configuration';
+
+            % Create EpochIntervalsecondofdayLabel
+            app.EpochIntervalsecondofdayLabel = uilabel(app.Main);
+            app.EpochIntervalsecondofdayLabel.VerticalAlignment = 'top';
+            app.EpochIntervalsecondofdayLabel.Position = [347 72 170 15];
+            app.EpochIntervalsecondofdayLabel.Text = 'Epoch Interval (second of day)';
+
+            % Create FromEditFieldLabel
+            app.FromEditFieldLabel = uilabel(app.Main);
+            app.FromEditFieldLabel.VerticalAlignment = 'top';
+            app.FromEditFieldLabel.Position = [347 37 33 15];
+            app.FromEditFieldLabel.Text = 'From';
+
+            % Create FromEditField
+            app.FromEditField = uieditfield(app.Main, 'numeric');
+            app.FromEditField.ValueDisplayFormat = '%.0f';
+            app.FromEditField.Position = [384 33 52 22];
+
+            % Create ToEditFieldLabel
+            app.ToEditFieldLabel = uilabel(app.Main);
+            app.ToEditFieldLabel.VerticalAlignment = 'top';
+            app.ToEditFieldLabel.Position = [440 37 25 15];
+            app.ToEditFieldLabel.Text = 'To';
+
+            % Create ToEditField
+            app.ToEditField = uieditfield(app.Main, 'numeric');
+            app.ToEditField.ValueDisplayFormat = '%.0f';
+            app.ToEditField.Position = [477 33 52 22];
+            app.ToEditField.Value = 86370;
+
+            % Create LoadSavedConfigurationButton
+            app.LoadSavedConfigurationButton = uibutton(app.Main, 'push');
+            app.LoadSavedConfigurationButton.ButtonPushedFcn = createCallbackFcn(app, @LoadSavedConfigurationButtonPushed, true);
+            app.LoadSavedConfigurationButton.BackgroundColor = [0.902 0.902 0.902];
+            app.LoadSavedConfigurationButton.Position = [94 33 158 22];
+            app.LoadSavedConfigurationButton.Text = 'Load Saved Configuration';
+
+            % Show the figure after all components are created
+            app.Main.Visible = 'on';
+        end
+    end
+
+    % App creation and deletion
+    methods (Access = public)
+
+        % Construct app
+        function app = PPPH
+
+            % Create UIFigure and components
+            createComponents(app)
+
+            % Register the app with App Designer
+            registerApp(app, app.Main)
+
+            if nargout == 0
+                clear app
+            end
+        end
+
+        % Code that executes before app deletion
+        function delete(app)
+
+            % Delete UIFigure when app is deleted
+            delete(app.Main)
+        end
+    end
+end]]></w:t></w:r></w:p></w:body></w:document>
