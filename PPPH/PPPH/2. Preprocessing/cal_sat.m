@@ -9,7 +9,7 @@ rec    = data.inf.rec.pos;
 if size(rec,1) ~= 1
     rec = rec';
 end
-
+ 
 en = size(data.obs.st,1);
 sn = size(data.obs.st,2);
 psat = NaN(en,7,sn);
