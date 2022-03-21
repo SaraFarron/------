@@ -145,5 +145,5 @@ def get_rinex_files(start: str, end: str):
 if __name__ == '__main__':
     # get_sp3_files()
     # get_rinex_files('190', '195')
-    print(get_ftp_dir('/pub/gps/data/daily/2021/068/'))
+    print(get_ftp_dir('/pub/gps/data/daily/2019/190/19l/'))
     
