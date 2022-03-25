@@ -1,5 +1,4 @@
 from os import makedirs, path
-from threading import current_thread
 
 from utils import *
 
@@ -15,8 +14,7 @@ RINEX_FILES_DIRS = [
 ]
 
 """
-TODO Download rinexes from l folder, 
-check for cords + ionospheric coefs
+TODO check for cords + ionospheric coefs
 """
 
 def get_rinex_files():
@@ -38,9 +36,15 @@ def get_rinex_files():
             download_file_ftp(current_dir, file, host_dir)
             filename = host_dir + file
             filename = unpack_gz_file(filename)
-            file_data = read_file(filename, 1, 1)
-            print(filename + ':\n' + file_data)
+
     ftps.quit()
 
+
+def check_rinex_files(filename: str):
+    ionosphere_data = read_file(filename, 3, 0, 80)
+    cords_data = read_file(filename, 9, 0, 68)
+    json_data = {filename: {'ionoshpere': ionosphere_data, 'cords': cords_data}}
+    with open('rinex_data.json', 'a') as f:
+        json.dump(json_data, f)
 
 get_rinex_files()

@@ -125,10 +125,14 @@ def read_file(filename: str, line: int, start: int | None = 0, end: int | None =
         Reads a line from start to end character from file and returns line
     """
     with open(filename, 'r') as f:
-        result = f.readline(line)
+        for l in range(line):
+            f.readline()
+            if l + 1 == line:
+                result = f.readline()
 
     return result[start:end]
 
 
 def filter_by_format(files: list[str, ], format: str): 
     return [file for file in files if file.endswith(format)]
+
