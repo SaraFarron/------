@@ -136,3 +136,48 @@ def read_file(filename: str, line: int, start: int | None = 0, end: int | None =
 def filter_by_format(files: list[str, ], format: str): 
     return [file for file in files if file.endswith(format)]
 
+
+def coordinates_parser(string: str) -> list[float, float, float]:
+    res = [x for x in string.split(' ') if x != '']
+    res = [x.replace('D', 'E') for x in res]
+
+    cords = []
+    for x in res:
+        try:
+            cords.append(float(x))
+        except ValueError:
+            continue
+
+    if len(cords) == 3:
+        print('Cords parsed successfully')
+        return cords
+
+    print(f'error parse cords {cords}')
+    return
+
+
+def ionosphere_parser(string: str) -> list[float, float, float]:
+    res = [x for x in string.split(' ') if x != '']
+    res = [x.replace('D', 'E') for x in res]
+
+    try:
+        if res[0] != 'GAL':
+            print('wrong data')
+            return
+    except IndexError:
+        print('error parse i8e')
+        return
+    
+    a_coefs = []
+    for x in res[1:]:
+        try:
+            a_coefs.append(float(x))
+        except ValueError:
+            continue
+    
+    if len(a_coefs) == 4:
+        print('Ionosphere coefs parsed successfully')
+        return a_coefs[:-1]
+    
+    print(f'error parse coefs {a_coefs}')
+    return
