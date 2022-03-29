@@ -1,6 +1,6 @@
 from ftplib import FTP_TLS
 from pathlib import Path
-from os import remove, listdir, path, getcwd
+from os import remove, listdir, path, getcwd, makedirs
 import unlzw3
 import json
 import gzip
@@ -85,6 +85,7 @@ def ftp_login() -> FTP_TLS:
     ftps = FTP_TLS(host=HOST)
     ftps.login(user=USER, passwd=PASSWORD)
     ftps.prot_p()
+    print('login successful')
     return ftps
 
 
@@ -181,3 +182,40 @@ def ionosphere_parser(string: str) -> list[float, float, float]:
     
     print(f'error parse coefs {a_coefs}')
     return
+
+
+def get_files_from_ftp_dir(dir: str, 
+                           target_root: str, 
+                           ftp_root: str, 
+                           format: str, 
+                           archive: str | None = None, 
+                           ftps: FTP_TLS | None = None) -> None:
+    """
+        Downloads all files from provided ftp directory, format example: '.rnx', archive example: '.gz'
+    """
+    if not ftps:
+        ftps = ftp_login()
+
+    current_dir = ftp_root + dir
+    host_dir = target_root + dir
+    ftps = ftp_cwd(current_dir, ftps)
+    try:
+        makedirs(host_dir)
+    except FileExistsError:
+        print(f'{dir} already exists')
+
+    print(f'getting all {format} files from {dir}')
+
+    files = get_directory_ftp(current_dir, ftps)
+    files = [f for f in files if f.endswith(format + archive) and not path.exists(host_dir + f[:-len(archive)])]
+    for file in files:
+        download_file_ftp(current_dir, file, host_dir)
+        filename = host_dir + file
+        if archive == '.gz':
+            filename = unpack_gz_file(filename)
+        elif archive == '.Z':
+            filename = unpack_z_file(filename)
+        else:
+            print('File is not archived of unknown archive format')
+
+    print(f'{dir} downloaded successfully')

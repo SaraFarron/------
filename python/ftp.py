@@ -8,6 +8,13 @@ RINEX_FILES_DIRS = [
     'gnss/data/daily/2020/001/20g/',
     'gnss/data/daily/2020/001/20f/',
 ]
+SP3_FILES_DIRS = [
+    'gnss/products/2085/',
+    'gnss/products/2086/',
+    'gnss/products/2087/',
+    'gnss/products/2088/',
+    'gnss/products/2089/',
+]
 
 
 def get_rinex_files():
@@ -15,20 +22,7 @@ def get_rinex_files():
     ftps = ftp_login()
 
     for DIR in RINEX_FILES_DIRS:
-        current_dir = ftp_path_prefix + DIR
-        host_dir = path_prefix + DIR
-        ftps = ftp_cwd(current_dir, ftps)
-        try:
-            makedirs(host_dir)
-        except FileExistsError:
-            print(f'{DIR} already exists')
-
-        files = get_directory_ftp(current_dir, ftps)
-        files = [f for f in files if f.endswith('.rnx.gz') and not path.exists(host_dir + f[:-3])]
-        for file in files:
-            download_file_ftp(current_dir, file, host_dir)
-            filename = host_dir + file
-            filename = unpack_gz_file(filename)
+        get_files_from_ftp_dir(DIR, path_prefix, ftp_path_prefix, '.rnx', '.gz', ftps)
 
     ftps.quit()
 
@@ -53,11 +47,14 @@ def check_rinex_file(filename: str) -> None:
         json.dump(json_data, f)
 
 
-# dir = getcwd() + '/ftp_data/' + 'gnss/data/daily/2020/001/20l/'
-# for file in listdir(dir):
-#     check_rinex_file(dir + file)
+def get_sp3_files():
+    path_prefix, ftp_path_prefix = 'ftp_data/', '/pub/'
+    ftps = ftp_login()
 
-# get_rinex_files()
+    for DIR in SP3_FILES_DIRS:
+        get_files_from_ftp_dir(DIR, path_prefix, ftp_path_prefix, '.sp3', '.Z', ftps)
+
+    ftps.quit()
 
 
 def get_sp3_datetime():
@@ -69,4 +66,10 @@ def get_sp3_datetime():
         print(f'{file} has been parsed')
 
 
-get_sp3_datetime()
+# dir = getcwd() + '/ftp_data/' + 'gnss/data/daily/2020/001/20l/'
+# for file in listdir(dir):
+#     check_rinex_file(dir + file)
+
+# get_rinex_files()
+# get_sp3_datetime()
+get_sp3_files()
