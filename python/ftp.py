@@ -15,7 +15,9 @@ SP3_FILES_DIRS = [
     'gnss/products/2088/',
     'gnss/products/2089/',
 ]
-
+OBS_FILES_DIRS = [
+    'gnss/data/daily/2020/001/20o/',
+]
 
 def get_rinex_files():
     path_prefix, ftp_path_prefix = 'ftp_data/', '/pub/'
@@ -57,6 +59,16 @@ def get_sp3_files():
     ftps.quit()
 
 
+def get_obs_files():
+    path_prefix, ftp_path_prefix = 'ftp_data/', '/pub/'
+    ftps = ftp_login()
+
+    for DIR in OBS_FILES_DIRS:
+        get_files_from_ftp_dir(DIR, path_prefix, ftp_path_prefix, '.20o', '.Z', ftps)
+
+    ftps.quit()
+
+
 def get_sp3_datetime():
     for file in listdir('python_sp3_files/'):
         datetime = read_file('python_sp3_files/' + file, 22, 3, 31)
@@ -72,4 +84,5 @@ def get_sp3_datetime():
 
 # get_rinex_files()
 # get_sp3_datetime()
-get_sp3_files()
+# get_sp3_files()
+get_obs_files()
