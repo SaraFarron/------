@@ -10,7 +10,6 @@ time = '02 18:24:27'
 station_cords = [-15.425538589403404, 28.311014636811894, 1324.9196041869]
 sattelite_cords = [-111.18083374029375, 137.59726265257754, -6401946.81655583]
 
-
 gal_args = ' '.join(map(str, [a0, a1, a2])) + ' '
 time_args = time + ' '
 station_args = ' '.join(map(str, station_cords)) + ' '

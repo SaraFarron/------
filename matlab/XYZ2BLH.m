@@ -44,7 +44,7 @@ else
               H=D*cos(B)+Z*sin(B)-a*sqrt(1-ex^2*sin(B)^2);
               break;
           end
-          s1=s2;   
+          s1=s2;
        end
     end
 end
