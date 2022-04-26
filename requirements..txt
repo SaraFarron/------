@@ -1,1 +1,2 @@
-unlzw==0.2.1
+unlzw
+matplotlib==3.5.1
