@@ -125,6 +125,7 @@ def read_file(filename: str, line: int, start: int | None = 0, end: int | None =
     """
         Reads a line from start to end character from file and returns line
     """
+    result = ''
     with open(filename, 'r') as f:
         for l in range(line):
             f.readline()
