@@ -128,7 +128,11 @@ def read_file(filename: str, line: int, start: int | None = 0, end: int | None =
     result = ''
     with open(filename, 'r') as f:
         for l in range(line):
-            f.readline()
+            try:
+                f.readline()
+            except UnicodeDecodeError:
+                print(f'decode error in file {filename}')
+                return
             if l + 1 == line:
                 result = f.readline()
 
