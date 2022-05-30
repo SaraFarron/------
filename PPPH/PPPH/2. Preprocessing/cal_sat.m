@@ -15,6 +15,9 @@ sn = size(data.obs.st,2);
 psat = NaN(en,7,sn);
 tofs = NaN(en,sn);
 
+sara_x = [];
+sara_y = [];
+sara_z = [];
 
 for i=1:en
     for k=1:sn
@@ -69,10 +72,20 @@ for i=1:en
                 psat(i,5,k) = VY;
                 psat(i,6,k) = VZ;
                 psat(i,7,k) = dt;
+
+                sara_x(end + 1) = VX;
+                sara_y(end + 1) = VY;
+                sara_z(end + 1) = VZ;
             end
         end
     end
+    fprintf('next sattelite?\n');
 end
+
+formatSpec = 'x = %8.2f y = %8.2f z = %8.2f\n';
+fileID = fopen('psat_data.txt','w');
+fprintf(fileID, formatSpec, sara_x, sara_y, sara_z);
+fclose(fileID);
 
 data.psat = psat;
 data.tofs = tofs;

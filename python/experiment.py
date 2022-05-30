@@ -1,14 +1,24 @@
 from os import listdir, remove
+
+from numpy import diff
 from utils import read_file
 from xyz_to_blh import xyz_to_blh, xyz2blh_gost
+
+
+def file_exists(filename: str) -> bool:
+    """
+    Remove file if it already exists
+    """
+    if filename in listdir():
+        remove(filename)
+        return True
+    return False
 
 
 def parse_rinex():
     rinex_dir = 'ftp_data/gnss/data/daily/'
     file_name = 'rinex_data.txt'
-
-    if file_name in listdir():
-        remove(file_name)
+    file_exists(file_name)
 
     for year in listdir(rinex_dir):
         dir_with_year = rinex_dir + year + '/'
@@ -31,6 +41,19 @@ def parse_rinex():
                     print(f'file {file} is wrong: gal: {gal} cords comment: {cords_comment}')
 
 
+def parse_sp3():
+    sp3_dir = 'ftp_data/gnss/products/'
+    file_name = 'sp3_data.txt'
+    file_exists(file_name)
+
+    for folder in listdir(sp3_dir):
+        dir_of_files = sp3_dir + folder + '/'
+        for file in listdir(dir_of_files):
+            date_time = read_file(dir_of_files + file, 22, 3, 31)
+            with open(file_name, 'a') as f:
+                f.write(f'date time: {date_time}, file: {file}\n')
+
+
 def main():
     """
     1. Parse rinex, get date and time, get a0, a1 and a2
@@ -41,18 +64,28 @@ def main():
     4. Run nequick
     5. (Optional) After nequick finishes - create a plot
     """
-    sp3_dir = 'ftp_data/gnss/products/'
-    file_name = 'sp3_data.txt'
+    file_name = 'cords.txt'
+    file_exists(file_name)
 
-    if file_name in listdir():
-        remove(file_name)
-
-    for folder in listdir(sp3_dir):
-        dir_of_files = sp3_dir + folder + '/'
-        for file in listdir(dir_of_files):
-            date_time = read_file(dir_of_files + file, 22, 3, 31)
-            with open(file_name, 'a') as f:
-                f.write(f'date time: {date_time}, file: {file}\n')
+    with open('psat_data.txt', 'r') as f:
+        counter, difference_counter = 0, 0
+        for l in f.readlines():
+            x, y, z = l[4:12], l[17:25], l[30:38]
+            x, y, z = x.replace(' ', ''), y.replace(' ', ''), z.replace(' ', '')
+            try:
+                x, y, z = float(x), float(y), float(z)
+            except ValueError:
+                print('Value Error')
+                return
+            blh = xyz_to_blh(x, y, z)
+            blh_gost = xyz2blh_gost(x, y, z)
+            for n, g in zip(blh, blh_gost):
+                if n != g:
+                    difference_counter += 1
+            with open(file_name, 'a') as c:
+                c.write(f'b = {blh[0]}, l = {blh[1]}, h = {blh[2]}\n')
+            counter += 1
+    print(f'counter = {counter} difference counter = {difference_counter}')
         
 if __name__ == '__main__':
     main()
