@@ -1,6 +1,6 @@
 from os import listdir, remove
+from datetime import datetime
 
-from numpy import diff
 from utils import read_file
 from xyz_to_blh import xyz_to_blh, xyz2blh_gost
 
@@ -68,24 +68,26 @@ def main():
     file_exists(file_name)
 
     with open('psat_data.txt', 'r') as f:
-        counter, difference_counter = 0, 0
-        for l in f.readlines():
-            x, y, z = l[4:12], l[17:25], l[30:38]
-            x, y, z = x.replace(' ', ''), y.replace(' ', ''), z.replace(' ', '')
-            try:
-                x, y, z = float(x), float(y), float(z)
-            except ValueError:
-                print('Value Error')
-                return
-            blh = xyz_to_blh(x, y, z)
-            blh_gost = xyz2blh_gost(x, y, z)
-            for n, g in zip(blh, blh_gost):
-                if n != g:
-                    difference_counter += 1
-            with open(file_name, 'a') as c:
+        with open(file_name, 'a') as c:
+            for l in f.readlines():
+                x, y, z = l[4:12], l[17:25], l[30:38]
+                x, y, z = map(lambda s: s.replace(' ', ''), (x, y, z))
+                try:
+                    x, y, z = float(x), float(y), float(z)
+                except ValueError:
+                    print('Value Error')
+                    return
+                blh = xyz_to_blh(x, y, z)
+                # blh_gost = xyz2blh_gost(x, y, z)
+                # for n, g in zip(blh, blh_gost):
+                #     if n != g:
+                #         difference_counter += 1
                 c.write(f'b = {blh[0]}, l = {blh[1]}, h = {blh[2]}\n')
-            counter += 1
-    print(f'counter = {counter} difference counter = {difference_counter}')
-        
+
+
 if __name__ == '__main__':
+    start = datetime.now()
     main()
+    end = datetime.now()
+    time = end - start
+    print(f'execution time {time.microseconds / 1000}s')

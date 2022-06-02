@@ -8,7 +8,7 @@ NEQUICK_CCIR_ARG = r'C:\NeQuickJRC\NeQuickJRC\ccir\ '
 a0, a1, a2 = 2.4500E+01, 3.2422E-01, 4.3640E-03
 time = '02 18.287643'
 station_cords = [28.311014636811894, -15.425538589403404, 1324.9196041869]
-sattelite_cords = [137.5972626525775, -64.47973242387415, -6374528.453041455]
+sattelite_cords = [-150.40679053343788, -150.15235171457363, -6385718.987531194]
 
 gal_args = ' '.join(map(str, [a0, a1, a2])) + ' '
 time_args = time + ' '
