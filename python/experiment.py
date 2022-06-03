@@ -1,5 +1,6 @@
 from os import listdir, remove
 from datetime import datetime
+from re import findall
 
 from utils import read_file
 from xyz_to_blh import xyz_to_blh, xyz2blh_gost
@@ -34,9 +35,12 @@ def parse_rinex():
                     gal = read_file(path, 2, 7, 41)
                     cords = read_file(path, 8, 2, 42)
                     date, time = date_time.split(' ')
-                    # x, y, z = cords.split(' ')
+                    cords = cords.split(' ')
+                    cords = [x for x in cords if x]
+                    x, y, z = cords[0], cords[1], cords[2]
+                    yield x, y, z
                     with open(file_name, 'a') as f:
-                        f.write(f'date: {date} time: {time} GAL: {gal} x, y, z: {cords} file: {file}\n')
+                        f.write(f'date: {date} time: {time} GAL: {gal} x, y, z: {x}, {y}, {z} file: {file}\n')
                 else:
                     print(f'file {file} is wrong: gal: {gal} cords comment: {cords_comment}')
 
@@ -54,16 +58,7 @@ def parse_sp3():
                 f.write(f'date time: {date_time}, file: {file}\n')
 
 
-def main():
-    """
-    1. Parse rinex, get date and time, get a0, a1 and a2
-    2. Parse all sp3s, get date and time and compare with rinex's - if it ~= - take data,
-    if not - next one
-    3. Create txt file with data needed for nequick, transform xyz to blh
-    3.1. (Optional) Check differenct in final results between gost blh and internet one
-    4. Run nequick
-    5. (Optional) After nequick finishes - create a plot
-    """
+def convert_cords():
     file_name = 'cords.txt'
     file_exists(file_name)
 
@@ -85,9 +80,42 @@ def main():
                 c.write(f'b = {blh[0]}, l = {blh[1]}, h = {blh[2]}\n')
 
 
+def main():
+    """
+    1. Parse rinex, get date and time, get a0, a1 and a2
+    2. Parse all sp3s, get date and time and compare with rinex's - if it ~= - take data,
+    if not - next one
+    3. Create txt file with data needed for nequick, transform xyz to blh
+    3.1. (Optional) Check differenct in final results between gost blh and internet one
+    4. Run nequick
+    5. (Optional) After nequick finishes - create a plot
+    """
+    file_exists('stdin.txt')
+    # a0, a1, a2 = get_ionospheric_coefs()
+    # month = get_month()
+    with open('stdin.txt', 'w') as f:
+        while True:
+            # ut = get_ut()
+            x, y, z = parse_rinex()
+            b, l, h = parse_sp3()
+            line = f"{month} {ut} {x} {y} {z} {b} {l} {h}"
+            
+
+
+def check_cords():
+    for l in range(23, 54):
+        line = read_file('ftp_data/gnss/products/2050/emr20500.sp3', l, 5, 46)
+        nums = line.split(' ')
+        nums = [x for x in nums if x]
+        for i, x in enumerate(nums):
+            nums[i] = float(x.replace(' ', ''))
+        print(xyz_to_blh(*nums))
+
 if __name__ == '__main__':
     start = datetime.now()
-    main()
+    # main()
+    # check_cords()
+    parse_rinex()
     end = datetime.now()
     time = end - start
-    print(f'execution time {time.microseconds / 1000}s')
+    print(f'execution time {time.microseconds / 1000}ms')
