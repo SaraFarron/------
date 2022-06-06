@@ -3,10 +3,10 @@ from os import makedirs, path
 from utils import *
 
 RINEX_FILES_DIRS = [
-    'gnss/data/daily/2020/001/20l/',
-    'gnss/data/daily/2020/001/20h/',
-    'gnss/data/daily/2020/001/20g/',
-    'gnss/data/daily/2020/001/20f/',
+    'gnss/data/daily/2017/191/20l/',
+    'gnss/data/daily/2017/192/20l/',
+    'gnss/data/daily/2017/193/20l/',
+    'gnss/data/daily/2017/194/20l/',
 ]
 SP3_FILES_DIRS = [
     'gnss/products/2085/',
@@ -82,7 +82,4 @@ def get_sp3_datetime():
 # for file in listdir(dir):
 #     check_rinex_file(dir + file)
 
-# get_rinex_files()
-# get_sp3_datetime()
-# get_sp3_files()
-get_obs_files()
+get_rinex_files()

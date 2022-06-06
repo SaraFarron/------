@@ -59,7 +59,8 @@ def xyz2blh_gost(x: float, y: float, z: float) -> tuple[float, float, float]:
         c = asin(z / r)
         p = e ** 2 * a / (2 * r)
         s1 = 0
-        while True:
+        counter = 0
+        while counter < 100:
             b = c + s1
             s2 = asin(p * sin(2 * b) / sqrt(1 - e ** 2 * sin(b) ** 2 * b))
             d = abs(s2 - s1)
@@ -69,6 +70,9 @@ def xyz2blh_gost(x: float, y: float, z: float) -> tuple[float, float, float]:
                 break
             else:
                 s1 = s2
+            counter += 1
+        else:
+            return None, None, None
 
     return degrees(B), degrees(L), H
 

@@ -2,9 +2,11 @@ from ftplib import FTP_TLS
 from pathlib import Path
 from os import remove, listdir, path, getcwd, makedirs
 import unlzw3
-import json
 import gzip
 import shutil
+
+from xyz_to_blh import xyz_to_blh, xyz2blh_gost
+
 
 HOST = 'gdc.cddis.eosdis.nasa.gov'
 USER = 'anonymous'
@@ -119,24 +121,6 @@ def get_dir_with_data(dir: str, ftps: FTP_TLS | None) -> list[str, ]:
     ftps = ftp_cwd(dir, ftps)
 
     return ftps.retrlines('LIST')
-
-
-def read_file(filename: str, line: int, start: int | None = 0, end: int | None = -1) -> str:
-    """
-        Reads a line from start to end character from file and returns line
-    """
-    result = ''
-    with open(filename, 'r') as f:
-        for l in range(line):
-            try:
-                f.readline()
-            except UnicodeDecodeError:
-                print(f'decode error in file {filename}')
-                return
-            if l + 1 == line:
-                result = f.readline()
-
-    return result[start:end]
 
 
 def filter_by_format(files: list[str, ], format: str): 
