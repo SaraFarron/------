@@ -63,7 +63,7 @@ for i=1:en
             pos    = rotation(R,er_ang,3);
             sara_x(end + 1) = pos(1);
             sara_y(end + 1) = pos(2);
-            sara_z(end + 1) = pos(3);
+            sara_z(end + 1) = VZ;
             
             if any(isnan(pos))
                 data.obs.st(i,k) = 0;
@@ -82,7 +82,7 @@ for i=1:en
     fprintf('next sattelite?\n');
 end
 
-formatSpec = '%12.2f %12.2f %12.2f\n';
+formatSpec = 'x = %8.2f y = %8.2f z = %8.2f\n';
 fileID = fopen('psat_data.txt','w');
 fprintf(fileID, formatSpec, sara_x, sara_y, sara_z);
 fclose(fileID);

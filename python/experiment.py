@@ -16,7 +16,7 @@ def file_exists(filename: str) -> bool:
     return False
 
 
-def parse_rinex():
+def parse_all_rinex():
     rinex_dir = 'ftp_data/gnss/data/daily/'
     file_name = 'rinex_data.txt'
     file_exists(file_name)
@@ -45,6 +45,45 @@ def parse_rinex():
                     print(f'file {file} is wrong: gal: {gal} cords comment: {cords_comment}')
 
 
+def get_station_cords(rinex_name: str) -> tuple[str, str, str]:
+    file_name = 'rinex_data.txt'
+    file_exists(file_name)
+
+    cords = read_file(rinex_name, 8, 2, 42)
+    cords = cords.split(' ')
+    cords = [float(x) for x in cords if x]
+    return xyz_to_blh(cords[0], cords[1], cords[2])
+
+
+def get_ionospheric_coefs(file: str) -> list[str, str, str]:
+    gal = read_file(file, 2, 7, 41).split(' ')
+    gal = [x for x in gal if x]
+    return gal
+
+
+def get_satellite_cords(file: str, shift) -> list[float, float, float]:
+    line = 23 + 23 * shift
+    cords = read_file(file, line, 5, 46).split(' ')
+    cords = [float(x) for x in cords if x]
+
+    match len(cords):
+        case 6:
+            line = line - 1
+            cords = read_file(file, line, 5, 46).split(' ')
+            cords = [float(x) for x in cords if x]
+        case 0: return
+    cords = xyz_to_blh(*cords)
+    return cords
+
+
+def get_ut(file: str, shift: int) -> str:
+    line = 24 + 87 * shift
+    ut = read_file(file, line, 15, 32)
+    h, m, s = [float(x) for x in ut.split(' ') if x]
+    ut = h + m / 60 + s / 3600
+    return ut
+
+
 def parse_sp3():
     sp3_dir = 'ftp_data/gnss/products/'
     file_name = 'sp3_data.txt'
@@ -65,7 +104,7 @@ def convert_cords():
     with open('psat_data.txt', 'r') as f:
         with open(file_name, 'a') as c:
             for l in f.readlines():
-                x, y, z = l[4:12], l[17:25], l[30:38]
+                x, y, z = [x for x in l.split(' ') if x]
                 x, y, z = map(lambda s: s.replace(' ', ''), (x, y, z))
                 try:
                     x, y, z = float(x), float(y), float(z)
@@ -77,7 +116,7 @@ def convert_cords():
                 # for n, g in zip(blh, blh_gost):
                 #     if n != g:
                 #         difference_counter += 1
-                c.write(f'b = {blh[0]}, l = {blh[1]}, h = {blh[2]}\n')
+                c.write(f'{blh[0]} {blh[1]} {blh[2]}\n')
 
 
 def main():
@@ -90,16 +129,41 @@ def main():
     4. Run nequick
     5. (Optional) After nequick finishes - create a plot
     """
+    rinex = 'ftp_data/gnss/data/daily/2020/001/20l/ABPO00MDG_R_20200010000_01D_EN.rnx'
+    sp3 = 'ftp_data/gnss/products/2050/emr20500.sp3'
     file_exists('stdin.txt')
-    # a0, a1, a2 = get_ionospheric_coefs()
-    # month = get_month()
+    a0, a1, a2 = get_ionospheric_coefs(rinex)
+    x, y, z = get_station_cords(rinex)
+    month = read_file(rinex, 1, 44, 46)
     with open('stdin.txt', 'w') as f:
+        counter = 0
         while True:
-            # ut = get_ut()
-            x, y, z = parse_rinex()
-            b, l, h = parse_sp3()
-            line = f"{month} {ut} {x} {y} {z} {b} {l} {h}"
+            ut = get_ut(sp3, counter) # something is wrong here
+            try:
+                b, l, h = get_satellite_cords(sp3, counter)
+            except TypeError:
+                print('Finished')
+                return
+            line = f"{month} {ut} {x} {y} {z} {b} {l} {h}\n"
+            f.write(line)
+            counter += 1
             
+
+def nequick_stdin():
+    rinex = 'ftp_data/gnss/data/daily/2020/001/20l/ABPO00MDG_R_20200010000_01D_EN.rnx'
+    sp3 = 'PPPH/PPPH/Example/gbm19571.sp3'
+    month = read_file(rinex, 1, 44, 46)
+    a0, a1, a2 = get_ionospheric_coefs(rinex)
+    x, y, z = get_station_cords(rinex)
+
+    with open('cords.txt', 'r') as f:   
+        with open('stdin.txt', 'w') as s:
+            for counter, l in enumerate(f.readlines()):
+                b, l, h = l.split(' ')
+                ut = get_ut(sp3, counter)
+                line = f"{month} {ut} {x} {y} {z} {l} {b} {h}"
+                s.write(line)
+
 
 
 def check_cords():
@@ -115,7 +179,10 @@ if __name__ == '__main__':
     start = datetime.now()
     # main()
     # check_cords()
-    parse_rinex()
+    # parse_rinex()
+    # cords = xyz_to_blh(15033855.19, 20808060.64, 20798758.67)
+    # convert_cords()
+    nequick_stdin()
     end = datetime.now()
     time = end - start
     print(f'execution time {time.microseconds / 1000}ms')

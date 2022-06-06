@@ -3,7 +3,7 @@ from utils import read_file
 
 
 t, y = [], []
-with open('сборка/out.txt', 'r') as f:
+with open('сборка/stdout.txt', 'r') as f:
     for l in f.readlines():
         h = float(l[8:17].replace(' ', ''))
         t.append(h)
