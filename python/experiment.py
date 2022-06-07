@@ -5,28 +5,30 @@ from math import sqrt, asin, pi
 from utils import *
 from xyz_to_blh import xyz_to_blh, xyz2blh_gost
 
-RINEX = 'ftp_data/gnss/data/daily/2020/001/20l/ABPO00MDG_R_20200010000_01D_EN.rnx'
-SP3 = 'PPPH/PPPH/Example/gbm19571.sp3'
+RINEX = 'ftp_data/gnss/data/daily/2020/001/20l/AMC400USA_R_20200010000_01D_EN.rnx'
+SP3 = 'ftp_data/gnss/products/2086/igs20864.sp3'
 
 
 def main():
     print('reading rnx')
 
     # Get ionospheric coefficients
-    gal = read_file(RINEX, 2, 7, 41).split(' ')
+    gal = read_file(RINEX, 2, 7, 41).replace('D', 'e').split(' ')
     a0, a1, a2 = [float(x) for x in gal if x]
+    # a0, a1, a2 = 2.4500e+01, 3.2422e-01, 4.3640e-03
 
     # Get station coordinates
     station_cords = read_file(RINEX, 8, 2, 42).split(' ')
     station_cords = [float(x) for x in station_cords if x]
+    # station_cords = [1942826.2687, -5804070.3514, -1796894.1312]
     x, y, z = xyz_to_blh(*station_cords)
 
     # Get date
-    date = read_file(RINEX, 1, 41, 48)
-    year, month, day = date[:4], date[4:6], date[6:]
+    date = read_file(RINEX, 1, 40, 48)
+    year, month, day = map(int, [date[:4], date[4:6], date[6:]])
 
     print('writing stdin.txt\n reading sp3')
-    with open('stdin.txt', 'w') as input_data:
+    with open('сборка/stdin.txt', 'w') as input_data:
         with open(SP3, 'r') as sp3:
             with open('psat_data.txt', 'r') as psat:
                 print('checking dates')
@@ -36,20 +38,23 @@ def main():
 
                         # Get UT
                         case '*':
-                            ut = line[15:32].split(' ')
+                            ut = line[14:32].split(' ')
                             h, m, s = [float(x) for x in ut if x]
                             ut = h + m / 60 + s / 3600
                             date = line[3:14].split(' ')
-                            s_year, s_month, s_day = [x for x in date if x]
+                            s_year, s_month, s_day = [int(x) for x in date if x]
                             assert year == s_year and month == s_month and day == s_day, \
                                 'dates does not match'
+                            continue
                         
                         # Get position
                         case 'P':
+                            print('checking um')
                             # This retreives coordinates straight from sp3, which is incorrect
                             # sat_cords = line[5:46].split(' ')
                             # sat_cords = [float(x) for x in sat_cords if x]
                             sat_cords = psat.readline().split(' ')
+                            sat_cords = [float(x) for x in sat_cords if x]
                             b, l, h = xyz_to_blh(*sat_cords)
                             rang = sqrt(
                                 (sat_cords[0] - station_cords[0]) * (sat_cords[0] - station_cords[0]) + \
@@ -67,14 +72,17 @@ def main():
                                     station_cords[2] * station_cords[2]
                                     )
                                 ) * 180.0 / pi
-                            assert um > 0, 'um is negative'
+                            # assert um > 0, f'um is negative ({um})'
+                            if um <= 0:
+                                print(f'skipping - um is negative ({um})')
+                                continue
 
                         case _:
                             continue
-                    input_data.write(f'{month} {ut} {x} {y} {z} {b} {l} {h}\n')
+                    input_data.write(f'{month} {ut} {y} {x} {z} {l} {b} {h}\n')
         
     print('running nequick')
-    command = f'./сборка/NeQuickG_JRC_CCIR_MODIP_constants_UT_D.exe -f {a0} {a1} {a2} stdin.txt stdout.txt'
+    command = f'cd сборка; ./NeQuickG_JRC_CCIR_MODIP_constants_UT_D.exe -f {a0} {a1} {a2} stdin.txt stdout.txt'
     print(system(command))
     print('finished')
 
@@ -133,7 +141,7 @@ def find_rinex():
 
 if __name__ == '__main__':
     start = datetime.now()
-    # main()
+    main()
     # find_rinex()
     end = datetime.now()
     time = end - start

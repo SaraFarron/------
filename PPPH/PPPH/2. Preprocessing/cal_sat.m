@@ -83,7 +83,7 @@ for i=1:en
 end
 
 formatSpec = '%12.2f %12.2f %12.2f\n';
-fileID = fopen('psat_data.txt','w');
+fileID = fopen('C:\Универ\диплом\psat_data.txt','w');
 fprintf(fileID, formatSpec, sara_x, sara_y, sara_z);
 fclose(fileID);
 

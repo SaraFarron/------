@@ -1,12 +1,14 @@
 from os import makedirs, path
+import json
 
+from experiment import *
 from utils import *
 
 RINEX_FILES_DIRS = [
-    'gnss/data/daily/2017/191/20l/',
-    'gnss/data/daily/2017/192/20l/',
-    'gnss/data/daily/2017/193/20l/',
-    'gnss/data/daily/2017/194/20l/',
+    'gnss/data/daily/2017/191/17l/',
+    'gnss/data/daily/2017/192/17l/',
+    'gnss/data/daily/2017/193/17l/',
+    'gnss/data/daily/2017/194/17l/',
 ]
 SP3_FILES_DIRS = [
     'gnss/products/2085/',
@@ -19,6 +21,7 @@ OBS_FILES_DIRS = [
     'gnss/data/daily/2020/001/20o/',
 ]
 
+
 def get_rinex_files():
     path_prefix, ftp_path_prefix = 'ftp_data/', '/pub/'
     ftps = ftp_login()
@@ -30,23 +33,17 @@ def get_rinex_files():
 
 
 def check_rinex_file(filename: str) -> None:
-    i8e_data = read_file(filename, 3, 0, 60)
-    i8e_coefs = ionosphere_parser(i8e_data)
-    cords_data = read_file(filename, 9, 0, 60)
-    cords = coordinates_parser(cords_data)
-
     file_no_path = filename[54:]
-    if i8e_coefs and cords:
-        print(f'{file_no_path} has all data needed')
-        json_data = {file_no_path: {'i8e': i8e_coefs, 'cords': cords}}
+    i8e_data = read_file(filename, 3, 0, 3)
+    cords_data = read_file(filename, 9, 60, 69)
+    if i8e_data == 'GAL' and cords_data == 'COMMENT':
+        print(f'{file_no_path} is valid')
+        json_data = {file_no_path: {'i8e': i8e_data, 'cords': cords_data}}
         with open('rinex_data.json', 'a') as f:
             json.dump(json_data, f)
         return
-
-    print(f'{file_no_path} is bad')
-    json_data = {file_no_path: {'ionoshpere': i8e_data, 'cords': cords_data}}
-    with open('rinex_bad_data.json', 'a') as f:
-        json.dump(json_data, f)
+    # print(f'{file_no_path} is invalid')
+    print(f'GAL-{i8e_data}|COMMENT-{cords_data}')
 
 
 def get_sp3_files():
@@ -78,8 +75,11 @@ def get_sp3_datetime():
         print(f'{file} has been parsed')
 
 
-# dir = getcwd() + '/ftp_data/' + 'gnss/data/daily/2020/001/20l/'
-# for file in listdir(dir):
-#     check_rinex_file(dir + file)
+folders = ['191', '192', '193', '194', ]
+for folder in folders:
+    dir = getcwd() + '/ftp_data/' + 'gnss/data/daily/2017/' + folder + '/17l/'
+    for file in listdir(dir):
+        check_rinex_file(dir + file)
 
-get_rinex_files()
+# get_rinex_files()
+

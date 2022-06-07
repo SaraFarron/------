@@ -1,5 +1,5 @@
 clear
-xyz = [-1.378451958678890e+03, 1.258820379702524e+03, -2.304813121561112e+03];
-cords_on_earth = [5415352.9566  2917210.1635 -1685888.6292];
-angle_of_place = calcUm(cords_on_earth, xyz);
+xyz = [-21580426.31, -4233481.41, 5909056.76];
+cords_on_earth = [-1248596.2520 -4819428.2840  3976506.0340];
+angle_of_place = calcUm(xyz, cords_on_earth);
 blh = XYZ2BLH(xyz(1), xyz(2), xyz(3));

@@ -1,6 +1,7 @@
 from ftplib import FTP_TLS
 from pathlib import Path
 from os import remove, listdir, path, getcwd, makedirs
+from math import sqrt, asin, pi
 import unlzw3
 import gzip
 import shutil
@@ -208,3 +209,27 @@ def get_files_from_ftp_dir(dir: str,
             print('File is not archived of unknown archive format')
 
     print(f'{dir} downloaded successfully')
+
+
+def calc_um(sat_cords: list[float, float, float], station_cords: list[float, float, float]) -> float:
+    rang = sqrt(
+                (sat_cords[0] - station_cords[0]) * (sat_cords[0] - station_cords[0]) + \
+                (sat_cords[1] - station_cords[1]) * (sat_cords[1] - station_cords[1]) + \
+                (sat_cords[2] - station_cords[2]) * (sat_cords[2] - station_cords[2])
+                )
+    kx = (sat_cords[0] - station_cords[0]) / rang
+    ky = (sat_cords[1] - station_cords[1]) / rang
+    kz = (sat_cords[2] - station_cords[2]) / rang
+    um = asin(
+        (kx * station_cords[0] + ky * station_cords[1] + kz * station_cords[2]) / \
+        sqrt(
+            station_cords[0] * station_cords[0] + \
+            station_cords[1] * station_cords[1] + \
+            station_cords[2] * station_cords[2]
+            )
+        ) * 180.0 / pi
+    return um
+
+
+if __name__ == '__main__':
+    print(calc_um([-21580426.31, -4233481.41, 5909056.76], [1942826.2687, -5804070.3514, -1796894.1312]))
