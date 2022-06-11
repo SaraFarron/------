@@ -5,7 +5,7 @@ from math import sqrt, asin, pi
 from utils import *
 from xyz_to_blh import xyz_to_blh, xyz2blh_gost
 
-RINEX = 'ftp_data/gnss/data/daily/2020/001/20l/AMC400USA_R_20200010000_01D_EN.rnx'
+RINEX = 'ftp_data/gnss/data/daily/2020/001/20l/CHPI00BRA_R_20200010000_01D_EN.rnx'
 SP3 = 'ftp_data/gnss/products/2086/igs20864.sp3'
 
 
@@ -15,12 +15,10 @@ def main():
     # Get ionospheric coefficients
     gal = read_file(RINEX, 2, 7, 41).replace('D', 'e').split(' ')
     a0, a1, a2 = [float(x) for x in gal if x]
-    # a0, a1, a2 = 2.4500e+01, 3.2422e-01, 4.3640e-03
 
     # Get station coordinates
     station_cords = read_file(RINEX, 8, 2, 42).split(' ')
     station_cords = [float(x) for x in station_cords if x]
-    # station_cords = [1942826.2687, -5804070.3514, -1796894.1312]
     x, y, z = xyz_to_blh(*station_cords)
 
     # Get date
@@ -30,7 +28,7 @@ def main():
     print('writing stdin.txt\n reading sp3')
     with open('сборка/stdin.txt', 'w') as input_data:
         with open(SP3, 'r') as sp3:
-            with open('psat_data.txt', 'r') as psat:
+            with open('major_data.txt', 'r') as psat:
                 print('checking dates')
 
                 for line in sp3.readlines():
@@ -43,19 +41,15 @@ def main():
                             ut = h + m / 60 + s / 3600
                             date = line[3:14].split(' ')
                             s_year, s_month, s_day = [int(x) for x in date if x]
-                            assert year == s_year and month == s_month and day == s_day, \
-                                'dates does not match'
                             continue
                         
                         # Get position
                         case 'P':
                             print('checking um')
-                            # This retreives coordinates straight from sp3, which is incorrect
-                            # sat_cords = line[5:46].split(' ')
-                            # sat_cords = [float(x) for x in sat_cords if x]
                             sat_cords = psat.readline().split(' ')
                             sat_cords = [float(x) for x in sat_cords if x]
                             b, l, h = xyz_to_blh(*sat_cords)
+                            b, l, h = x, y, z + 2e7
                             rang = sqrt(
                                 (sat_cords[0] - station_cords[0]) * (sat_cords[0] - station_cords[0]) + \
                                 (sat_cords[1] - station_cords[1]) * (sat_cords[1] - station_cords[1]) + \
@@ -72,7 +66,6 @@ def main():
                                     station_cords[2] * station_cords[2]
                                     )
                                 ) * 180.0 / pi
-                            # assert um > 0, f'um is negative ({um})'
                             if um <= 0:
                                 print(f'skipping - um is negative ({um})')
                                 continue
@@ -139,10 +132,19 @@ def find_rinex():
                     print(f'file {file} is wrong: gal: {gal} cords comment: {cords_comment}')
 
 
+def get_data_from_major():
+    with open('NeQk/almanach/GLO_CRD_ALM_04_step001sec.csv', 'r') as f:
+        with open('major_data.txt', 'w') as m:
+            for line in f.readlines():
+                data = line.split(' ')
+                m.write(f'{data[1]} {data[2]} {data[3]}\n')
+    print('finished extracting majors data')
+
+
 if __name__ == '__main__':
     start = datetime.now()
+    get_data_from_major()
     main()
-    # find_rinex()
     end = datetime.now()
     time = end - start
     print(f'execution time {time.microseconds / 1000}ms')
