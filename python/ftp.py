@@ -1,4 +1,3 @@
-from os import makedirs, path
 import json
 
 from experiment import *
@@ -42,7 +41,6 @@ def check_rinex_file(filename: str) -> None:
         with open('rinex_data.json', 'a') as f:
             json.dump(json_data, f)
         return
-    # print(f'{file_no_path} is invalid')
     print(f'GAL-{i8e_data}|COMMENT-{cords_data}')
 
 
