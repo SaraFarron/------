@@ -1,6 +1,7 @@
 from os import listdir, remove, system
 from datetime import datetime
 from math import sqrt, asin, pi
+from matplotlib import pyplot as plt
 
 from utils import *
 from xyz_to_blh import xyz_to_blh, xyz2blh_gost
@@ -49,7 +50,6 @@ def main():
                             sat_cords = psat.readline().split(' ')
                             sat_cords = [float(x) for x in sat_cords if x]
                             b, l, h = xyz_to_blh(*sat_cords)
-                            b, l, h = x, y, z + 2e7
                             rang = sqrt(
                                 (sat_cords[0] - station_cords[0]) * (sat_cords[0] - station_cords[0]) + \
                                 (sat_cords[1] - station_cords[1]) * (sat_cords[1] - station_cords[1]) + \
@@ -75,27 +75,14 @@ def main():
                     input_data.write(f'{month} {ut} {y} {x} {z} {l} {b} {h}\n')
         
     print('running nequick')
-    command = f'cd сборка; ./NeQuickG_JRC_CCIR_MODIP_constants_UT_D.exe -f {a0} {a1} {a2} stdin.txt stdout.txt'
+    path_prefix = "C:\Универ\диплом\сборка/"
+    nq_path = path_prefix + "NeQuickG_JRC_CCIR_MODIP_constants_UT_D.exe"
+    stdin_path = path_prefix + 'stdin.txt'
+    stdout_path = path_prefix + 'stdout.txt'
+    command = f'{nq_path} -f {a0} {a1} {a2} {stdin_path} {stdout_path}'
     print(system(command))
-    print('finished')
-
-
-def read_file(filename: str, line: int, start: int | None = 0, end: int | None = -1) -> str:
-    """
-        Reads a line from start to end character from file and returns line
-    """
-    result = ''
-    with open(filename, 'r') as f:
-        for l in range(line):
-            try:
-                f.readline()
-            except UnicodeDecodeError:
-                print(f'decode error in file {filename}')
-                return
-            if l + 1 == line:
-                result = f.readline()
-
-    return result[start:end]
+    print('nequick finished')
+    create_tec_plot()
 
 
 def find_rinex():
@@ -133,7 +120,7 @@ def find_rinex():
 
 
 def get_data_from_major():
-    with open('NeQk/almanach/GLO_CRD_ALM_04_step001sec.csv', 'r') as f:
+    with open('NeQk/almanach/GLO_CRD_ALM_03_step001sec.csv', 'r') as f:
         with open('major_data.txt', 'w') as m:
             for line in f.readlines():
                 data = line.split(' ')
@@ -141,10 +128,78 @@ def get_data_from_major():
     print('finished extracting majors data')
 
 
+def real_delay():
+    with open('PPPH/PPPH/Example/ISTA00TUR_R_20171910000_01D_30S_MO.00o', 'r') as f:
+        with open('pseudo.txt', 'w') as o:
+            for l in f.readlines():
+                if l[:3] == '> 2' or l[:3] == 'C09':
+                    o.write(l)
+
+    t, y = [], []
+    fL1, fL2 = 1575.42e6, 1227.6e6
+    I = lambda pL1, pL2: fL2 ** 2 / (fL1 ** 2 - fL2 ** 2) * (pL2 - pL1)
+
+    with open('pseudo.txt', 'r') as f:
+        lines = f.readlines()
+        for i, l in enumerate(lines):
+            try:
+                next_l = lines[i+1]
+            except IndexError:
+                break
+
+            if l[:3] == '> 2' and next_l[:3] == 'C09':
+                ut = l[13:29].split(' ')
+                h, m, s = [float(x) for x in ut if x] 
+                ut = h + m / 60 + s / 3600
+                t.append(ut)
+
+                pL1 = next_l[5:17]
+                pL2 = next_l[21:33]
+                d = I(float(pL1), float(pL2))
+                y.append(d)
+    
+    return t, y
+
+
+def create_tec_plot(x, y):
+    t, nq = [], []
+    d = lambda tec: tec * 10e16 * 40.3 / 1575e6 ** 2
+    with open('сборка/stdout.txt', 'r') as f:
+        lines = f.readlines()
+        if not lines:
+            print('no data')
+            return
+            
+        for l in lines:
+            h = float(l[8:18].replace(' ', ''))
+            t.append(h)
+            n = float(l[120:].replace(' ', ''))
+            nq.append(d(n))
+        for _ in range(7):
+            nq.append(nq[0])
+            nq.pop(0)
+        # i = int(len(nq) / 7) + 1
+        # nq[i], nq[i-7] = nq[i-7], nq[i]
+
+    fig, ax = plt.subplots(2, 1)
+    ax[0].plot(t, nq, label='NeQuick')
+    ax[1].plot(x, y, 'o', label='satellite', markersize=1)
+    ax[0].set_xlabel('время')
+    ax[0].set_ylabel('задержка')
+    ax[1].set_xlabel('время')
+    ax[1].set_ylabel('задержка')
+    ax[0].legend()
+    ax[1].legend()
+    ax[0].grid()
+    ax[1].grid()
+    plt.show()
+
+
 if __name__ == '__main__':
     start = datetime.now()
-    get_data_from_major()
-    main()
+    # get_data_from_major()
+    # main()
+    create_tec_plot(*real_delay())
     end = datetime.now()
     time = end - start
     print(f'execution time {time.microseconds / 1000}ms')

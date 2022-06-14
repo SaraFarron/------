@@ -2,6 +2,7 @@ from ftplib import FTP_TLS
 from pathlib import Path
 from os import remove, listdir, path, getcwd, makedirs
 from math import sqrt, asin, pi
+from matplotlib import pyplot as plt
 import unlzw3
 import gzip
 import shutil
@@ -231,5 +232,28 @@ def calc_um(sat_cords: list[float, float, float], station_cords: list[float, flo
     return um
 
 
+def read_file(filename: str, line: int, start: int | None = 0, end: int | None = -1) -> str:
+    """
+        Reads a line from start to end character from file and returns line
+    """
+    result = ''
+    with open(filename, 'r') as f:
+        for l in range(line):
+            try:
+                f.readline()
+            except UnicodeDecodeError:
+                print(f'decode error in file {filename}')
+                return
+            if l + 1 == line:
+                result = f.readline()
+
+    return result[start:end]
+
+
+
 if __name__ == '__main__':
-    print(calc_um([-21580426.31, -4233481.41, 5909056.76], [1942826.2687, -5804070.3514, -1796894.1312]))
+    pass
+
+    # plt.plot(t, y, 'o', markersize=1)
+    # plt.grid()
+    # plt.show()
