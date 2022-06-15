@@ -164,7 +164,7 @@ def real_delay():
 
 def create_tec_plot(x, y):
     t, nq = [], []
-    d = lambda tec: tec * 10e16 * 40.3 / 1575e6 ** 2
+    d = lambda tec: tec * 1e16 * 40.3 / 1575e6 ** 2
     with open('сборка/stdout.txt', 'r') as f:
         lines = f.readlines()
         if not lines:

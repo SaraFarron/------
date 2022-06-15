@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 def create_tec_plot():
     t, nq = [], []
     x, y = [], []
-    d = lambda tec: tec * 10e6 * 40.3 / 1227e6 ** 2
+    d = lambda tec: tec * 1e16 * 40.3 / 1227e6 ** 2
     with open('сборка/stdout.txt', 'r') as f:
         lines = f.readlines()
         if not lines:
