@@ -7,8 +7,6 @@ import unlzw3
 import gzip
 import shutil
 
-from xyz_to_blh import xyz_to_blh, xyz2blh_gost
-
 
 HOST = 'gdc.cddis.eosdis.nasa.gov'
 USER = 'anonymous'
@@ -250,10 +248,5 @@ def read_file(filename: str, line: int, start: int | None = 0, end: int | None =
     return result[start:end]
 
 
-
 if __name__ == '__main__':
     pass
-
-    # plt.plot(t, y, 'o', markersize=1)
-    # plt.grid()
-    # plt.show()

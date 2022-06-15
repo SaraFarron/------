@@ -1,4 +1,4 @@
-from os import listdir, remove, system
+from os import listdir, system
 from datetime import datetime
 from math import sqrt, asin, pi
 from matplotlib import pyplot as plt
@@ -129,10 +129,11 @@ def get_data_from_major():
 
 
 def real_delay():
+    satellite = 'C10'
     with open('PPPH/PPPH/Example/ISTA00TUR_R_20171910000_01D_30S_MO.00o', 'r') as f:
         with open('pseudo.txt', 'w') as o:
             for l in f.readlines():
-                if l[:3] == '> 2' or l[:3] == 'C09':
+                if l[:3] == '> 2' or l[:3] == satellite:
                     o.write(l)
 
     t, y = [], []
@@ -147,7 +148,7 @@ def real_delay():
             except IndexError:
                 break
 
-            if l[:3] == '> 2' and next_l[:3] == 'C09':
+            if l[:3] == '> 2' and next_l[:3] == satellite:
                 ut = l[13:29].split(' ')
                 h, m, s = [float(x) for x in ut if x] 
                 ut = h + m / 60 + s / 3600
@@ -175,22 +176,26 @@ def create_tec_plot(x, y):
             t.append(h)
             n = float(l[120:].replace(' ', ''))
             nq.append(d(n))
-        for _ in range(7):
-            nq.append(nq[0])
-            nq.pop(0)
-        # i = int(len(nq) / 7) + 1
-        # nq[i], nq[i-7] = nq[i-7], nq[i]
+        nqa = [*nq]
+        for _ in range(int(len(nqa) * 24 / 7)):
+            nqa.append(nqa[0])
+            nqa.pop(0)
 
     fig, ax = plt.subplots(2, 1)
-    ax[0].plot(t, nq, label='NeQuick')
-    ax[1].plot(x, y, 'o', label='satellite', markersize=1)
+    # ax[0].plot(t, nq, label='NeQuick')
+    # ax[0].set_xlabel('время')
+    # ax[0].set_ylabel('задержка')
+    # ax[0].legend()
+    # ax[0].grid()
+    ax[0].plot(t, nqa)
     ax[0].set_xlabel('время')
     ax[0].set_ylabel('задержка')
+    ax[0].legend()
+    ax[0].grid()
+    ax[1].plot(x, y, 'o', label='satellite', markersize=1)
     ax[1].set_xlabel('время')
     ax[1].set_ylabel('задержка')
-    ax[0].legend()
     ax[1].legend()
-    ax[0].grid()
     ax[1].grid()
     plt.show()
 

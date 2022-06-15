@@ -36,5 +36,4 @@ def create_tec_plot():
     ax[1].set_ylabel('задержка')
     ax[0].legend()
     ax[1].legend()
-    # plt.grid()
     plt.show()
