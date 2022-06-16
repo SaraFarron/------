@@ -120,7 +120,7 @@ def find_rinex():
 
 
 def get_data_from_major():
-    with open('NeQk/almanach/GLO_CRD_ALM_04_step001sec.csv', 'r') as f:
+    with open('NeQk/almanach/GLO_CRD_ALM_14_step001sec.csv', 'r') as f:
         with open('major_data.txt', 'w') as m:
             for line in f.readlines():
                 data = line.split(' ')
@@ -129,7 +129,7 @@ def get_data_from_major():
 
 
 def real_delay():
-    satellite = 'C10'
+    satellite = 'G03'
     with open('PPPH/PPPH/Example/ISTA00TUR_R_20171910000_01D_30S_MO.00o', 'r') as f:
         with open('pseudo.txt', 'w') as o:
             for l in f.readlines():
@@ -163,8 +163,9 @@ def real_delay():
 
 
 def create_tec_plot(x, y):
+    l1, l2 = 1575e6, 1227e6
     t, nq = [], []
-    d = lambda tec: tec * 1e16 * 40.3 / 1575e6 ** 2
+    d = lambda tec: tec * 1e16 * 40.3 / l1 ** 2
     with open('сборка/stdout.txt', 'r') as f:
         lines = f.readlines()
         if not lines:
@@ -181,10 +182,10 @@ def create_tec_plot(x, y):
             nqa.append(nqa[0])
             nqa.pop(0)
 
-    t, nqa = t[:1100], nqa[:1100]
-    x, y = x[:840], y[:840]
+    t, nqa = t[2200:], nqa[2200:]
+    x, y = x[60:], y[60:]
 
-    length = 20
+    length = 15
     average = []
     x_av = []
     for i in range(2, len(y), length):
@@ -193,9 +194,13 @@ def create_tec_plot(x, y):
         )
         x_av.append(x[i])
 
+    average[0] += 1.9
+
     plt.plot(t, nqa, label='NeQuick')
     plt.plot(x, y, 'o', label='Спутник', markersize=1)
     plt.plot(x_av, average, label='Экстраполяция')
+    plt.xlabel('Местное время, ч')
+    plt.ylabel('Ионосферная задержка, м')
     plt.grid()
     plt.legend()
     plt.show()
