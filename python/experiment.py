@@ -1,3 +1,4 @@
+from cProfile import label
 from os import listdir, system
 from datetime import datetime
 from math import sqrt, asin, pi
@@ -82,7 +83,6 @@ def main():
     command = f'{nq_path} -f {a0} {a1} {a2} {stdin_path} {stdout_path}'
     print(system(command))
     print('nequick finished')
-    create_tec_plot()
 
 
 def find_rinex():
@@ -120,7 +120,7 @@ def find_rinex():
 
 
 def get_data_from_major():
-    with open('NeQk/almanach/GLO_CRD_ALM_03_step001sec.csv', 'r') as f:
+    with open('NeQk/almanach/GLO_CRD_ALM_04_step001sec.csv', 'r') as f:
         with open('major_data.txt', 'w') as m:
             for line in f.readlines():
                 data = line.split(' ')
@@ -181,29 +181,30 @@ def create_tec_plot(x, y):
             nqa.append(nqa[0])
             nqa.pop(0)
 
-    fig, ax = plt.subplots(2, 1)
-    # ax[0].plot(t, nq, label='NeQuick')
-    # ax[0].set_xlabel('время')
-    # ax[0].set_ylabel('задержка')
-    # ax[0].legend()
-    # ax[0].grid()
-    ax[0].plot(t, nqa)
-    ax[0].set_xlabel('время')
-    ax[0].set_ylabel('задержка')
-    ax[0].legend()
-    ax[0].grid()
-    ax[1].plot(x, y, 'o', label='satellite', markersize=1)
-    ax[1].set_xlabel('время')
-    ax[1].set_ylabel('задержка')
-    ax[1].legend()
-    ax[1].grid()
+    t, nqa = t[:1100], nqa[:1100]
+    x, y = x[:840], y[:840]
+
+    length = 20
+    average = []
+    x_av = []
+    for i in range(2, len(y), length):
+        average.append(
+            sum([x for x in y[i-length+1:i]]) / length
+        )
+        x_av.append(x[i])
+
+    plt.plot(t, nqa, label='NeQuick')
+    plt.plot(x, y, 'o', label='Спутник', markersize=1)
+    plt.plot(x_av, average, label='Экстраполяция')
+    plt.grid()
+    plt.legend()
     plt.show()
 
 
 if __name__ == '__main__':
     start = datetime.now()
-    # get_data_from_major()
-    # main()
+    get_data_from_major()
+    main()
     create_tec_plot(*real_delay())
     end = datetime.now()
     time = end - start
