@@ -3,10 +3,12 @@ from os import listdir, system
 from datetime import datetime
 from math import sqrt, asin, pi
 from matplotlib import pyplot as plt
+import matplotlib
 
 from utils import *
 from xyz_to_blh import xyz_to_blh, xyz2blh_gost
 
+matplotlib.rcParams.update({'font.size': 17})
 RINEX = 'ftp_data/gnss/data/daily/2020/001/20l/CHPI00BRA_R_20200010000_01D_EN.rnx'
 SP3 = 'ftp_data/gnss/products/2086/igs20864.sp3'
 
@@ -198,7 +200,7 @@ def create_tec_plot(x, y):
 
     plt.plot(t, nqa, label='NeQuick')
     plt.plot(x, y, 'o', label='Спутник', markersize=1)
-    plt.plot(x_av, average, label='Экстраполяция')
+    plt.plot(x_av, average, label='Усреднение')
     plt.xlabel('Местное время, ч')
     plt.ylabel('Ионосферная задержка, м')
     plt.grid()
