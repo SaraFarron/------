@@ -122,7 +122,7 @@ def find_rinex():
 
 
 def get_data_from_major():
-    with open('NeQk/almanach/GLO_CRD_ALM_14_step001sec.csv', 'r') as f:
+    with open('NeQk/almanach/GLO_CRD_ALM_04_step001sec.csv', 'r') as f:
         with open('major_data.txt', 'w') as m:
             for line in f.readlines():
                 data = line.split(' ')
@@ -131,7 +131,7 @@ def get_data_from_major():
 
 
 def real_delay():
-    satellite = 'G03'
+    satellite = 'E01'
     with open('PPPH/PPPH/Example/ISTA00TUR_R_20171910000_01D_30S_MO.00o', 'r') as f:
         with open('pseudo.txt', 'w') as o:
             for l in f.readlines():
@@ -140,7 +140,9 @@ def real_delay():
 
     t, y = [], []
     fL1, fL2 = 1575.42e6, 1227.6e6
-    I = lambda pL1, pL2: fL2 ** 2 / (fL1 ** 2 - fL2 ** 2) * (pL2 - pL1)
+    dpl1 = 2.928
+    # I = lambda pL1, pL2: fL2 ** 2 / (fL1 ** 2 - fL2 ** 2) * (pL2 - pL1)
+    I = lambda pL1, pL2: fL2 ** 2 / (fL1 ** 2 - fL2 ** 2) * (pL2 - (pL1 + dpl1))
 
     with open('pseudo.txt', 'r') as f:
         lines = f.readlines()
@@ -184,9 +186,8 @@ def create_tec_plot(x, y):
             nqa.append(nqa[0])
             nqa.pop(0)
 
-    t, nqa = t[2200:], nqa[2200:]
-    x, y = x[60:], y[60:]
-
+    t, nqa = t[1400:-1100], nqa[1400:-1100]
+    x, y = x[:-350], y[:-350]
     length = 15
     average = []
     x_av = []
@@ -196,7 +197,7 @@ def create_tec_plot(x, y):
         )
         x_av.append(x[i])
 
-    average[0] += 1.9
+    # average[0] += 1.9
 
     plt.plot(t, nqa, label='NeQuick')
     plt.plot(x, y, 'o', label='Спутник', markersize=1)
