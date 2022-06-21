@@ -1,7 +1,3 @@
-python_rinex_files
-python_sp3_files
-NeQuickJRC/bin/gcc/doxygen
-NequickG
 nequickvenv
 ftp_data
 python/__pycache__/

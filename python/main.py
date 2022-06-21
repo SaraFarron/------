@@ -1,4 +1,5 @@
-from os import listdir, system
+import os
+from os import system
 from datetime import datetime
 from matplotlib import pyplot as plt
 import matplotlib
@@ -9,31 +10,47 @@ from xyz_to_blh import xyz_to_blh
 matplotlib.rcParams.update({'font.size': 17})
 RINEX = 'ftp_data/gnss/data/daily/2020/001/20l/CHPI00BRA_R_20200010000_01D_EN.rnx'
 SP3 = 'ftp_data/gnss/products/2086/igs20864.sp3'
+OBS_RINEX = 'PPPH/Example/ISTA00TUR_R_20171910000_01D_30S_MO.00o'
 
 
-def main():
+def main(
+    satellite: str, 
+    csv: str, 
+    rnx: str, 
+    sp3: str, 
+    obs: str, 
+    dpl1: float, 
+    average_length: int,
+    nq_slice: list[int, int] | None = [0, -1],
+    r2l_slice: list[int, int] | None = [0, -1]
+    ):
+
+    csv_file = f'NeQk/almanach/GLO_CRD_ALM_{csv}_step001sec.csv'
+
+    np_rnx = os.path.normpath(RINEX).split(os.sep)[-1]
+    np_sp3 = os.path.normpath(SP3).split(os.sep)[-1]
+    np_obs = os.path.normpath(OBS_RINEX).split(os.sep)[-1]
+    np_csv = os.path.normpath(csv_file).split(os.sep)[-1]
+
     print('reading rnx')
-
     # Get ionospheric coefficients
-    gal = read_file(RINEX, 2, 7, 41).replace('D', 'e').split(' ')
+    gal = read_file(rnx, 2, 7, 41).replace('D', 'e').split(' ')
     a0, a1, a2 = [float(x) for x in gal if x]
 
     # Get station coordinates
-    station_cords = read_file(RINEX, 8, 2, 42).split(' ')
+    station_cords = read_file(rnx, 8, 2, 42).split(' ')
     station_cords = [float(x) for x in station_cords if x]
     x, y, z = xyz_to_blh(*station_cords)
 
     # Get date
-    date = read_file(RINEX, 1, 40, 48)
+    date = read_file(rnx, 1, 40, 48)
     year, month, day = map(int, [date[:4], date[4:6], date[6:]])
 
     print('writing stdin.txt\n reading sp3')
     with open('сборка/stdin.txt', 'w') as input_data:
-        with open(SP3, 'r') as sp3:
-            with open('major_data.txt', 'r') as psat:
-                print('checking dates')
-
-                for line in sp3.readlines():
+        with open(sp3, 'r') as sp3_file:
+            with open(csv_file, 'r') as psat:
+                for line in sp3_file.readlines():
                     match line[0]:
 
                         # Get UT
@@ -46,9 +63,11 @@ def main():
                         
                         # Get position
                         case 'P':
-                            print('checking um')
                             sat_cords = psat.readline().split(' ')
-                            sat_cords = [float(x) for x in sat_cords if x]
+                            sat_cords = [sat_cords[1], sat_cords[2], sat_cords[3]]
+                            sat_cords = list(map(float, sat_cords))
+
+                            print('checking um')
                             um = calc_um(sat_cords, station_cords)
                             if um <= 0:
                                 print(f'skipping - um is negative ({um})')
@@ -60,97 +79,54 @@ def main():
                     input_data.write(f'{month} {ut} {y} {x} {z} {l} {b} {h}\n')
         
     print('running nequick')
+
     path_prefix = "C:\Универ\диплом\сборка/"
     nq_path = path_prefix + "NeQuickG_JRC_CCIR_MODIP_constants_UT_D.exe"
     stdin_path = path_prefix + 'stdin.txt'
     stdout_path = path_prefix + 'stdout.txt'
     command = f'{nq_path} -f {a0} {a1} {a2} {stdin_path} {stdout_path}'
     print(system(command))
+
     print('nequick finished')
 
-
-def find_rinex():
-    rinex_dir = 'ftp_data/gnss/data/daily/'
-
-    for year in listdir(rinex_dir):
-        dir_with_year = rinex_dir + year + '/'
-
-        for d in listdir(dir_with_year):
-            folder = year[-2:] + 'l'
-            dir_with_d = dir_with_year + d + '/' + folder + '/'
-
-            for file in listdir(dir_with_d):
-                path = dir_with_d + file
-                is_gal = read_file(path, 2, 0, 3)
-                cords_comment = read_file(path, 8, 60, 67)
-
-                if is_gal == 'GAL' and cords_comment == 'COMMENT':
-                    gal = read_file(path, 2, 7, 41)
-                    cords = read_file(path, 8, 2, 42)
-                    cords = cords.split(' ')
-                    cords = [x for x in cords if x]
-
-                    date = read_file(path, 1, 41, 48)
-                    year, month, day = date[:4], date[4:6], date[6:]
-
-                    if year == '2017' and month == '7' and day == '10':
-                        print(path)
-                        return
-
-                    print(f'{file} does not match')
-
-                else:
-                    print(f'file {file} is wrong: gal: {gal} cords comment: {cords_comment}')
-
-
-def get_data_from_major():
-    with open('NeQk/almanach/GLO_CRD_ALM_04_step001sec.csv', 'r') as f:
-        with open('major_data.txt', 'w') as m:
-            for line in f.readlines():
-                data = line.split(' ')
-                m.write(f'{data[1]} {data[2]} {data[3]}\n')
-    print('finished extracting majors data')
-
-
-def real_delay():
-    satellite = 'E01'
-    with open('PPPH/PPPH/Example/ISTA00TUR_R_20171910000_01D_30S_MO.00o', 'r') as f:
-        with open('pseudo.txt', 'w') as o:
-            for l in f.readlines():
-                if l[:3] == '> 2' or l[:3] == satellite:
-                    o.write(l)
-
-    t, y = [], []
+    real_time, real_delay = [], []
     fL1, fL2 = 1575.42e6, 1227.6e6
-    dpl1 = 2.928
     I = lambda pL1, pL2: fL2 ** 2 / (fL1 ** 2 - fL2 ** 2) * (pL2 - (pL1 + dpl1))
 
-    with open('pseudo.txt', 'r') as f:
-        lines = f.readlines()
-        for i, l in enumerate(lines):
-            try:
-                next_l = lines[i+1]
-            except IndexError:
-                break
+    print('getting real delay')
 
-            if l[:3] == '> 2' and next_l[:3] == satellite:
-                ut = l[13:29].split(' ')
-                h, m, s = [float(x) for x in ut if x] 
-                ut = h + m / 60 + s / 3600
-                t.append(ut)
+    with open(obs, 'r') as f:
+        lines = f.readlines()
+        switch = 'time'
+        for i, l in enumerate(lines):
+            if l[:3] == '> 2':
+                if switch == 'time':
+                    ut = l[13:29].split(' ')
+                    h, m, s = [float(x) for x in ut if x] 
+                    ut = h + m / 60 + s / 3600
+                    switch = 'satellite'
+                else:
+                    switch = 'time'
+            elif l[:3] == satellite and switch == 'satellite':
+                try:
+                    next_l = lines[i+1]
+                except IndexError:
+                    break
+                real_time.append(ut)
 
                 pL1 = next_l[5:17]
                 pL2 = next_l[21:33]
                 d = I(float(pL1), float(pL2))
-                y.append(d)
-    
-    return t, y
+                real_delay.append(d)
+                switch = 'time'
 
-
-def create_tec_plot(x, y):
     l1, l2 = 1575e6, 1227e6
-    t, nq = [], []
+    
+    print('getting nequick delay')
+
+    nq_time, nq_delay = [], []
     d = lambda tec: tec * 1e16 * 40.3 / l1 ** 2
+
     with open('сборка/stdout.txt', 'r') as f:
         lines = f.readlines()
         if not lines:
@@ -159,30 +135,32 @@ def create_tec_plot(x, y):
             
         for l in lines:
             h = float(l[8:18].replace(' ', ''))
-            t.append(h)
+            nq_time.append(h)
             n = float(l[120:].replace(' ', ''))
-            nq.append(d(n))
-        nqa = [*nq]
-        for _ in range(int(len(nqa) * 24 / 7)):
-            nqa.append(nqa[0])
-            nqa.pop(0)
+            nq_delay.append(d(n))
 
-    t, nqa = t[1400:-1100], nqa[1400:-1100]
-    x, y = x[:-350], y[:-350]
-    length = 15
-    average = []
-    x_av = []
-    for i in range(2, len(y), length):
-        average.append(
-            sum([x for x in y[i-length+1:i]]) / length
+        nq_delay_adj = [*nq_delay]
+        for _ in range(int(len(nq_delay_adj) * 24 / 7)):
+            nq_delay_adj.append(nq_delay_adj[0])
+            nq_delay_adj.pop(0)
+
+    print('creating plots')
+
+    nq_time, nq_delay_adj = nq_time[nq_slice[0]:nq_slice[1]], nq_delay_adj[nq_slice[0]:nq_slice[1]]
+    real_time, real_delay = real_time[r2l_slice[0]:r2l_slice[1]], real_delay[r2l_slice[0]:r2l_slice[1]]
+    average_delay, average_time = [], []
+
+    for i in range(2, len(real_delay), average_length):
+        average_delay.append(
+            sum([x for x in real_delay[i-average_length+1:i]]) / average_length
         )
-        x_av.append(x[i])
+        average_time.append(real_time[i])
 
-    average[0] = y[0]
+    average_delay[0] = real_delay[0]
 
-    plt.plot(t, nqa, label='NeQuick')
-    plt.plot(x, y, 'o', label='Спутник', markersize=1)
-    plt.plot(x_av, average, label='Усреднение')
+    plt.plot(nq_time, nq_delay_adj, label='NeQuick')
+    plt.plot(real_time, real_delay, 'o', label='Спутник', markersize=1)
+    plt.plot(average_time, average_delay, label='Усреднение')
     plt.xlabel('Местное время, ч')
     plt.ylabel('Ионосферная задержка, м')
     plt.grid()
@@ -192,9 +170,9 @@ def create_tec_plot(x, y):
 
 if __name__ == '__main__':
     start = datetime.now()
-    get_data_from_major()
-    main()
-    create_tec_plot(*real_delay())
+    average_length = 10
+    dpl1 = 2.928
+    main('E01', '04', RINEX, SP3, OBS_RINEX, dpl1, average_length)
     end = datetime.now()
     time = end - start
     print(f'execution time {time.microseconds / 1000}ms')

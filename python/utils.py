@@ -248,5 +248,39 @@ def read_file(filename: str, line: int, start: int | None = 0, end: int | None =
     return result[start:end]
 
 
+def find_rinex():
+    rinex_dir = 'ftp_data/gnss/data/daily/'
+
+    for year in listdir(rinex_dir):
+        dir_with_year = rinex_dir + year + '/'
+
+        for d in listdir(dir_with_year):
+            folder = year[-2:] + 'l'
+            dir_with_d = dir_with_year + d + '/' + folder + '/'
+
+            for file in listdir(dir_with_d):
+                path = dir_with_d + file
+                is_gal = read_file(path, 2, 0, 3)
+                cords_comment = read_file(path, 8, 60, 67)
+
+                if is_gal == 'GAL' and cords_comment == 'COMMENT':
+                    gal = read_file(path, 2, 7, 41)
+                    cords = read_file(path, 8, 2, 42)
+                    cords = cords.split(' ')
+                    cords = [x for x in cords if x]
+
+                    date = read_file(path, 1, 41, 48)
+                    year, month, day = date[:4], date[4:6], date[6:]
+
+                    if year == '2017' and month == '7' and day == '10':
+                        print(path)
+                        return
+
+                    print(f'{file} does not match')
+
+                else:
+                    print(f'file {file} is wrong: gal: {gal} cords comment: {cords_comment}')
+
+
 if __name__ == '__main__':
     pass
