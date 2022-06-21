@@ -1,4 +1,3 @@
-from cProfile import label
 from os import listdir, system
 from datetime import datetime
 from math import sqrt, asin, pi
@@ -6,7 +5,7 @@ from matplotlib import pyplot as plt
 import matplotlib
 
 from utils import *
-from xyz_to_blh import xyz_to_blh, xyz2blh_gost
+from xyz_to_blh import xyz_to_blh
 
 matplotlib.rcParams.update({'font.size': 17})
 RINEX = 'ftp_data/gnss/data/daily/2020/001/20l/CHPI00BRA_R_20200010000_01D_EN.rnx'
@@ -141,7 +140,6 @@ def real_delay():
     t, y = [], []
     fL1, fL2 = 1575.42e6, 1227.6e6
     dpl1 = 2.928
-    # I = lambda pL1, pL2: fL2 ** 2 / (fL1 ** 2 - fL2 ** 2) * (pL2 - pL1)
     I = lambda pL1, pL2: fL2 ** 2 / (fL1 ** 2 - fL2 ** 2) * (pL2 - (pL1 + dpl1))
 
     with open('pseudo.txt', 'r') as f:
@@ -197,7 +195,7 @@ def create_tec_plot(x, y):
         )
         x_av.append(x[i])
 
-    # average[0] += 1.9
+    average[0] = y[0]
 
     plt.plot(t, nqa, label='NeQuick')
     plt.plot(x, y, 'o', label='Спутник', markersize=1)
