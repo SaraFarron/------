@@ -1,1 +1,0 @@
--f alphaCoeffs[0] alphaCoeffs[1] alphaCoeffs[2] in.txt out.txt
