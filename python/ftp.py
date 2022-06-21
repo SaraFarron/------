@@ -1,6 +1,6 @@
 import json
 
-from experiment import *
+from main import *
 from utils import *
 
 RINEX_FILES_DIRS = [
@@ -35,9 +35,16 @@ def check_rinex_file(filename: str) -> None:
     file_no_path = filename[54:]
     i8e_data = read_file(filename, 3, 0, 3)
     cords_data = read_file(filename, 9, 60, 69)
+    
     if i8e_data == 'GAL' and cords_data == 'COMMENT':
         print(f'{file_no_path} is valid')
-        json_data = {file_no_path: {'i8e': i8e_data, 'cords': cords_data}}
+        json_data = {
+            file_no_path: {
+                'i8e': i8e_data, 
+                'cords': cords_data
+                }
+            }
+
         with open('rinex_data.json', 'a') as f:
             json.dump(json_data, f)
         return
@@ -73,11 +80,11 @@ def get_sp3_datetime():
         print(f'{file} has been parsed')
 
 
-folders = ['191', '192', '193', '194', ]
-for folder in folders:
-    dir = getcwd() + '/ftp_data/' + 'gnss/data/daily/2017/' + folder + '/17l/'
-    for file in listdir(dir):
-        check_rinex_file(dir + file)
+if __name__ == '__main__':
+    folders = ['191', '192', '193', '194', ]
+    for folder in folders:
+        dir = getcwd() + '/ftp_data/' + 'gnss/data/daily/2017/' + folder + '/17l/'
+        for file in listdir(dir):
+            check_rinex_file(dir + file)
 
-# get_rinex_files()
-
+    # get_rinex_files()

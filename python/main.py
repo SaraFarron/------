@@ -1,6 +1,5 @@
 from os import listdir, system
 from datetime import datetime
-from math import sqrt, asin, pi
 from matplotlib import pyplot as plt
 import matplotlib
 
@@ -43,7 +42,6 @@ def main():
                             h, m, s = [float(x) for x in ut if x]
                             ut = h + m / 60 + s / 3600
                             date = line[3:14].split(' ')
-                            s_year, s_month, s_day = [int(x) for x in date if x]
                             continue
                         
                         # Get position
@@ -51,26 +49,11 @@ def main():
                             print('checking um')
                             sat_cords = psat.readline().split(' ')
                             sat_cords = [float(x) for x in sat_cords if x]
-                            b, l, h = xyz_to_blh(*sat_cords)
-                            rang = sqrt(
-                                (sat_cords[0] - station_cords[0]) * (sat_cords[0] - station_cords[0]) + \
-                                (sat_cords[1] - station_cords[1]) * (sat_cords[1] - station_cords[1]) + \
-                                (sat_cords[2] - station_cords[2]) * (sat_cords[2] - station_cords[2])
-                                )
-                            kx = (sat_cords[0] - station_cords[0]) / rang
-                            ky = (sat_cords[1] - station_cords[1]) / rang
-                            kz = (sat_cords[2] - station_cords[2]) / rang
-                            um = asin(
-                                (kx * station_cords[0] + ky * station_cords[1] + kz * station_cords[2]) / \
-                                sqrt(
-                                    station_cords[0] * station_cords[0] + \
-                                    station_cords[1] * station_cords[1] + \
-                                    station_cords[2] * station_cords[2]
-                                    )
-                                ) * 180.0 / pi
+                            um = calc_um(sat_cords, station_cords)
                             if um <= 0:
                                 print(f'skipping - um is negative ({um})')
                                 continue
+                            b, l, h = xyz_to_blh(*sat_cords)
 
                         case _:
                             continue
