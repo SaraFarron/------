@@ -3,6 +3,7 @@ from os import system
 from datetime import datetime
 from matplotlib import pyplot as plt
 import matplotlib
+import numpy as np
 
 from utils import *
 from xyz_to_blh import xyz_to_blh
@@ -45,52 +46,43 @@ def main(
 
     sats = listdir('result/')
 
-    satellites = [
-        'C08', 'C09', 'C10', 'C11', 'C13', 'C14', \
-        'E03', 'E05', 'E19', 'E22', 'E24', \
-        'G03', 'G06', 'G24', 'G30', 'G31', \
-        'R10', 
-    ]
-
     if not file_exitsts(csv_out_file):
         run_nequick(sp3, csv_file, np_csv, [a0, a1, a2], station_cords, month, x, y, z)
 
-    for sat in satellites:
-        if f'{sat}-csv{csv}.png' in sats:
-            print(sat + ' already calculated')
-            continue
+    
+    if f'{satellite}-csv{csv}.png' not in sats:
+        # print(satellite + ' already calculated')
+        print(f'skipping {satellite}-csv{csv}')
+        return
 
-        print('sattelite ' + sat)
-        if not file_exitsts(csv_out_file):
-            run_nequick(sp3, csv_file, np_csv, [a0, a1, a2], station_cords, month, x, y, z)
+    print('sattelite ' + satellite + ' csv ' + csv)
 
-        nq_time, nq_delay_adj = calc_nq_delay(csv_out_file)
-        real_time, real_delay = calc_real_delay(obs, sat, dpl1)
+    nq_time, nq_delay_adj = calc_nq_delay(csv_out_file)
+    real_time, real_delay = calc_real_delay(obs, satellite, dpl1)
 
-        print('creating plots')
-
-        nq_time, nq_delay_adj = nq_time[nq_slice[0]:nq_slice[1]], nq_delay_adj[nq_slice[0]:nq_slice[1]]
-        real_time, real_delay = real_time[r2l_slice[0]:r2l_slice[1]], real_delay[r2l_slice[0]:r2l_slice[1]]
-        average_delay, average_time = [], []
-
-        for i in range(2, len(real_delay), average_length):
-            average_delay.append(
-                sum([x for x in real_delay[i - average_length + 1:i]]) / average_length
-            )
-            average_time.append(real_time[i])
-
-        average_delay[0] = real_delay[0]
-
-        plt.plot(nq_time, nq_delay_adj, 'o', label='NeQuick', markersize=1)
-        plt.plot(real_time, real_delay, 'o', label='Спутник', markersize=1)
-        plt.plot(average_time, average_delay, label='Усреднение')
-        plt.xlabel('Местное время, ч')
-        plt.ylabel('Ионосферная задержка, м')
-        plt.grid()
-        # plt.legend()
-        # plt.show()
-        plt.savefig(f'result/{sat}-csv{csv}.png')
-        plt.clf()
+    nq_time, nq_delay_adj = nq_time[nq_slice[0]:nq_slice[1]], nq_delay_adj[nq_slice[0]:nq_slice[1]]
+    real_time, real_delay = real_time[r2l_slice[0]:r2l_slice[1]], real_delay[r2l_slice[0]:r2l_slice[1]]
+    
+    print('calculating diff')
+    with open('dif_data.txt', 'a') as f:
+        n, r = 0, 0
+        while True:
+            try:
+                t_dif = nq_time[n] * 86400 / 24 - real_time[r] * 86400 / 24
+            except IndexError:
+                break
+            if t_dif >= 1:
+                r += 1
+                continue
+            elif t_dif <= -1:
+                n += 1
+                continue
+            dif = nq_delay_adj[n] - real_delay[r]
+            f.write(f'{dif}\n')
+            if t_dif > 0:
+                r += 1
+            else:
+                n += 1
 
 
 def run_nequick(sp3, csv_file, np_csv, a: list[str, str, str], station_cords, month, x, y, z):
@@ -181,11 +173,6 @@ def calc_nq_delay(csv_out_file) -> tuple[list[float, ], list[float, ]]:
             n = float(l[120:].replace(' ', ''))
             nq_delay.append(d(n))
 
-        # nq_delay_adj = [*nq_delay]
-        # for _ in range(int(len(nq_delay_adj) * 24 / 7)):
-        #     nq_delay_adj.append(nq_delay_adj[0])
-        #     nq_delay_adj.pop(0)
-
     return nq_time, nq_delay
 
 
@@ -207,14 +194,58 @@ def parse_PPPH():
     plt.show()
 
 
+def make_plot(nq_time, nq_delay_adj, real_time, real_delay, satellite, csv):
+    print('creating plots')
+    average_delay, average_time = [], []
+
+    for i in range(2, len(real_delay), average_length):
+        average_delay.append(
+            sum([x for x in real_delay[i - average_length + 1:i]]) / average_length
+        )
+        average_time.append(real_time[i])
+
+    average_delay[0] = real_delay[0]
+    plt.plot(nq_time, nq_delay_adj, 'o', label='NeQuick', markersize=1)
+    plt.plot(real_time, real_delay, 'o', label='Спутник', markersize=1)
+    plt.plot(average_time, average_delay, label='Усреднение')
+    plt.xlabel('Местное время, ч')
+    plt.ylabel('Ионосферная задержка, м')
+    plt.grid()
+    # plt.legend()
+    # plt.show()
+    plt.savefig(f'result/{satellite}-csv{csv}.png')
+    plt.clf()
+
+
+def diff_plots():
+    m = []
+    with open('dif_data.txt', 'r') as f:
+        for l in f.readlines():
+            m.append(float(l))
+    plt.hist(m, 48, density=True, rwidth=0.75)
+    plt.title(
+        f'mean = {round(sum(m) / len(m), 2)} numpy mean = {round(np.mean(m), 2)}'
+        )
+    plt.grid()
+    plt.show()
+
+
 if __name__ == '__main__':
     start = datetime.now()
+    # parse_PPPH()
     average_length = 10
     dpl1 = -2.928
-    csvs = [f'{x}' for x in range(10, 24)]
-    for csv in csvs:
-        main('C09', csv, RINEX, SP3, OBS_RINEX, dpl1, average_length)
-    # parse_PPPH()
+    csvs = [f'0{x}' for x in range(1, 10)] + [f'{x}' for x in range(10, 25)]
+    satellites = [
+        'C08', 'C09', 'C10', 'C11', 'C13', 'C14', \
+        'E03', 'E05', 'E19', 'E24', \
+        'G03', 'G06', 'G24', 'G30', 'G31', \
+        'R10', 
+    ]
+    for satellite in satellites:
+        for csv in csvs:
+            main(satellite, csv, RINEX, SP3, OBS_RINEX, dpl1, average_length)
+    diff_plots()
     end = datetime.now()
     time = end - start
     print(f'execution time {time.microseconds / 1000}ms')
