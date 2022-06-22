@@ -82,10 +82,10 @@ for i=1:en
     fprintf('next sattelite?\n');
 end
 
-formatSpec = '%12.2f %12.2f %12.2f\n';
-fileID = fopen('C:\Универ\диплом\psat_data.txt','w');
-fprintf(fileID, formatSpec, sara_x, sara_y, sara_z);
-fclose(fileID);
+% formatSpec = '%12.2f %12.2f %12.2f\n';
+% fileID = fopen('C:\Универ\диплом\psat_data.txt','w');
+% fprintf(fileID, formatSpec, sara_x, sara_y, sara_z);
+% fclose(fileID);
 
 data.psat = psat;
 data.tofs = tofs;

@@ -17,7 +17,7 @@ SP3_FILES_DIRS = [
     'gnss/products/2089/',
 ]
 OBS_FILES_DIRS = [
-    'gnss/data/daily/2020/001/20o/',
+    'gnss/data/daily/2020/002/20o/',
 ]
 
 
@@ -81,10 +81,11 @@ def get_sp3_datetime():
 
 
 if __name__ == '__main__':
-    folders = ['191', '192', '193', '194', ]
-    for folder in folders:
-        dir = getcwd() + '/ftp_data/' + 'gnss/data/daily/2017/' + folder + '/17l/'
-        for file in listdir(dir):
-            check_rinex_file(dir + file)
+    # folders = ['191', '192', '193', '194', ]
+    # for folder in folders:
+    #     dir = getcwd() + '/ftp_data/' + 'gnss/data/daily/2017/' + folder + '/17l/'
+    #     for file in listdir(dir):
+    #         check_rinex_file(dir + file)
 
     # get_rinex_files()
+    get_obs_files()
