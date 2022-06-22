@@ -1,8 +1,8 @@
 from ftplib import FTP_TLS
 from pathlib import Path
+import os
 from os import remove, listdir, path, getcwd, makedirs
 from math import sqrt, asin, pi
-from matplotlib import pyplot as plt
 import unlzw3
 import gzip
 import shutil
@@ -281,6 +281,14 @@ def find_rinex():
                 else:
                     print(f'file {file} is wrong: gal: {gal} cords comment: {cords_comment}')
 
+
+def file_exitsts(filename: str) -> bool:
+    filename = os.path.normpath(filename).split(os.sep)
+    file = filename[-1]
+    dir = ''.join(filename[:-1])
+    if file in listdir(dir):
+        return True
+    return False
 
 if __name__ == '__main__':
     pass
