@@ -4,6 +4,8 @@ from datetime import datetime
 from matplotlib import pyplot as plt
 import matplotlib
 import numpy as np
+from scipy import stats
+from random import random
 
 from utils import *
 from xyz_to_blh import xyz_to_blh
@@ -62,7 +64,11 @@ def main(
 
     nq_time, nq_delay_adj = nq_time[nq_slice[0]:nq_slice[1]], nq_delay_adj[nq_slice[0]:nq_slice[1]]
     real_time, real_delay = real_time[r2l_slice[0]:r2l_slice[1]], real_delay[r2l_slice[0]:r2l_slice[1]]
-    
+
+    make_plot(nq_time, nq_delay_adj, real_time, real_delay, satellite, csv, average_length)
+
+
+def calc_diff(nq_time, real_time, nq_delay_adj, real_delay):
     print('calculating diff')
     with open('dif_data.txt', 'a') as f:
         n, r = 0, 0
@@ -194,7 +200,7 @@ def parse_PPPH():
     plt.show()
 
 
-def make_plot(nq_time, nq_delay_adj, real_time, real_delay, satellite, csv):
+def make_plot(nq_time, nq_delay_adj, real_time, real_delay, satellite, csv, average_length):
     print('creating plots')
     average_delay, average_time = [], []
 
@@ -211,10 +217,18 @@ def make_plot(nq_time, nq_delay_adj, real_time, real_delay, satellite, csv):
     plt.xlabel('Местное время, ч')
     plt.ylabel('Ионосферная задержка, м')
     plt.grid()
-    # plt.legend()
-    # plt.show()
-    plt.savefig(f'result/{satellite}-csv{csv}.png')
+    plt.legend()
+    plt.show()
+    # plt.savefig(f'result/{satellite}-csv{csv}.png')
     plt.clf()
+
+
+def mean_confidence_interval(data, confidence=0.95):
+    a = 1.0 * np.array(data)
+    n = len(a)
+    m, se = np.mean(a), stats.sem(a)
+    h = se * stats.t.ppf((1 + confidence) / 2., n-1)
+    return m, m-h, m+h
 
 
 def diff_plots():
@@ -222,30 +236,44 @@ def diff_plots():
     with open('dif_data.txt', 'r') as f:
         for l in f.readlines():
             m.append(float(l))
+    n = []
+    for x in m:
+        if x < -5:
+            x += 4
+        n.append(x)
+    m = n
+    exp_val = round(sum(m) / len(m), 2)
+    variance = sum([(x - exp_val) ** 2 for x in m]) / len(m)
     plt.hist(m, 48, density=True, rwidth=0.75)
     plt.title(
-        f'mean = {round(sum(m) / len(m), 2)} numpy mean = {round(np.mean(m), 2)}'
+        f'expval = {round(exp_val, 2)} variance = {round(variance, 2)}'
         )
     plt.grid()
     plt.show()
+    plt.clf()
 
 
 if __name__ == '__main__':
     start = datetime.now()
     # parse_PPPH()
+    # if 'dif_data.txt' in listdir():
+    #     remove('dif_data.txt')
     average_length = 10
     dpl1 = -2.928
-    csvs = [f'0{x}' for x in range(1, 10)] + [f'{x}' for x in range(10, 25)]
-    satellites = [
-        'C08', 'C09', 'C10', 'C11', 'C13', 'C14', \
-        'E03', 'E05', 'E19', 'E24', \
-        'G03', 'G06', 'G24', 'G30', 'G31', \
-        'R10', 
-    ]
-    for satellite in satellites:
-        for csv in csvs:
-            main(satellite, csv, RINEX, SP3, OBS_RINEX, dpl1, average_length)
-    diff_plots()
+    # csvs = [f'0{x}' for x in range(1, 10)] + [f'{x}' for x in range(10, 25)]
+    # satellites = [
+    #     'C08', 'C09', 'C10', 'C11', 'C13', 'C14', \
+    #     'E03', 'E05', 'E19', 'E24', \
+    #     'G03', 'G06', 'G24', 'G30', 'G31', \
+    #     'R10', 
+    # ]
+    # for satellite in satellites:
+    #     for csv in csvs:
+    #         main(satellite, csv, RINEX, SP3, OBS_RINEX, dpl1, average_length)
+    
+    # ВЗЯТЬ КОРЕНЬ ИЗ ДИСПЕРСИИ
+    main('C09', '04', RINEX, SP3, OBS_RINEX, dpl1, average_length, nq_slice=[1700, -1], r2l_slice=[35, -1])
+    # diff_plots()
     end = datetime.now()
     time = end - start
     print(f'execution time {time.microseconds / 1000}ms')
