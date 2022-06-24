@@ -73,7 +73,7 @@ def main(
 
     average_delay[0] = real_delay[0]
 
-    plt.plot(nq_time, nq_delay_adj, label='NeQuick', markersize=2)
+    plt.plot(nq_time, nq_delay_adj, 'o', label='NeQuick', markersize=2)
     plt.plot(real_time, real_delay, 'o', label='Спутник', markersize=1)
     plt.plot(average_time, average_delay, label='Усреднение')
     plt.xlabel('Местное время, ч')
@@ -192,8 +192,8 @@ def calc_nq_delay(csv_out_file) -> tuple[list[float, ], list[float, ]]:
 if __name__ == '__main__':
     start = datetime.now()
     average_length = 10
-    dpl1 = -2.928
-    main('C09', '04', RINEX, SP3, OBS_RINEX, dpl1, average_length, nq_slice=[1700, -1], r2l_slice=[160, -1])
+    dpl1 = 2.928
+    main('C13', '13', RINEX, SP3, OBS_RINEX, dpl1, average_length, nq_slice=[10500, -11900], r2l_slice=[900, -1])
     end = datetime.now()
     time = end - start
     print(f'execution time {time.microseconds / 1000}ms')
