@@ -243,12 +243,14 @@ def diff_plots():
         n.append(x)
     m = n
     exp_val = round(sum(m) / len(m), 2)
-    variance = sum([(x - exp_val) ** 2 for x in m]) / len(m)
+    variance = (sum([(x - exp_val) ** 2 for x in m]) / len(m)) ** 0.5
     plt.hist(m, 48, density=True, rwidth=0.75)
     plt.title(
-        f'expval = {round(exp_val, 2)} variance = {round(variance, 2)}'
+        f'Мат. ожидание = {round(exp_val, 2)} Среднеквадр. отклонение = {round(variance, 2)}'
         )
     plt.grid()
+    plt.ylabel('Вероятность')
+    plt.xlabel('dI, м')
     plt.show()
     plt.clf()
 
@@ -271,7 +273,6 @@ if __name__ == '__main__':
     #     for csv in csvs:
     #         main(satellite, csv, RINEX, SP3, OBS_RINEX, dpl1, average_length)
     
-    # ВЗЯТЬ КОРЕНЬ ИЗ ДИСПЕРСИИ
     main('C09', '04', RINEX, SP3, OBS_RINEX, dpl1, average_length, nq_slice=[1700, -1], r2l_slice=[35, -1])
     # diff_plots()
     end = datetime.now()
