@@ -12,7 +12,7 @@ from xyz_to_blh import xyz_to_blh
 
 matplotlib.rcParams.update({'font.size': 17})
 RINEX = 'ftp_data/gnss/data/daily/2020/001/20l/CHPI00BRA_R_20200010000_01D_EN.rnx'
-SP3 = 'ftp_data/gnss/products/2086/igs20864.sp3'
+SP3 = 'ftp_data/gnss/products/2086/emr20864.sp3'
 OBS_RINEX = 'PPPH/Example/ISTA00TUR_R_20171910000_01D_30S_MO.00o'
 
 
@@ -177,7 +177,7 @@ def calc_nq_delay(csv_out_file) -> tuple[list[float, ], list[float, ]]:
             h = float(l[8:18].replace(' ', ''))
             nq_time.append(h)
             n = float(l[120:].replace(' ', ''))
-            nq_delay.append(d(n))
+            nq_delay.append(n)  # d(n)
 
     return nq_time, nq_delay
 
@@ -255,26 +255,81 @@ def diff_plots():
     plt.clf()
 
 
+def tec_plot():
+    print('reading rnx')
+    # Get ionospheric coefficients
+    gal = read_file(RINEX, 2, 7, 41).replace('D', 'e').split(' ')
+    a = [float(x) for x in gal if x]
+
+    # Get station coordinates
+    station_cords = read_file(RINEX, 8, 2, 42).split(' ')
+    station_cords = [float(x) for x in station_cords if x]
+    x, y, z = xyz_to_blh(*station_cords)
+
+    # Get date
+    date = read_file(RINEX, 1, 40, 48)
+    year, month, day = map(int, [date[:4], date[4:6], date[6:]])
+
+    nq_time, nq_stec = [], []
+
+    print('writing stdin.txt\n reading sp3')
+    with open('сборка/stdin.txt', 'w') as input_data:
+        for i in range(86400):
+            b, l, h = [x, y, z + 2e4]
+            ut = i / 86400 * 24
+
+            input_data.write(f'{month} {ut} {y} {x} {z} {l} {b} {h}\n')
+
+    print('running nequick')
+
+    path_prefix = "C:/Универ/диплом/"
+    nq_path = path_prefix + "сборка/NeQuickG_JRC_CCIR_MODIP_constants_UT_D.exe"
+    stdin_path = path_prefix + 'сборка/stdin.txt'
+    stdout_path = path_prefix + 'db/' + 'out_' + 'sp3' + '.txt'
+    command = f'{nq_path} -f {a[0]} {a[1]} {a[2]} {stdin_path} {stdout_path}'
+    print(system(command))
+
+    with open('db/out_sp3.txt', 'r') as f:
+        for i, line in enumerate(f.readlines()):
+            l = [x for x in line.split(' ') if x]
+            time = l[1]
+            tec = l[-1]
+            nq_time.append(float(time))
+            nq_stec.append(float(tec))
+
+    print('nequick finished')
+    plt.plot(nq_time, nq_stec)
+    plt.grid()
+    plt.ylabel('STEC, TECU')
+    plt.xlabel('Время суток')
+    plt.show()
+
+
 if __name__ == '__main__':
     start = datetime.now()
-    # parse_PPPH()
-    # if 'dif_data.txt' in listdir():
-    #     remove('dif_data.txt')
     average_length = 10
     dpl1 = -2.928
-    # csvs = [f'0{x}' for x in range(1, 10)] + [f'{x}' for x in range(10, 25)]
-    # satellites = [
-    #     'C08', 'C09', 'C10', 'C11', 'C13', 'C14', \
-    #     'E03', 'E05', 'E19', 'E24', \
-    #     'G03', 'G06', 'G24', 'G30', 'G31', \
-    #     'R10', 
-    # ]
-    # for satellite in satellites:
-    #     for csv in csvs:
-    #         main(satellite, csv, RINEX, SP3, OBS_RINEX, dpl1, average_length)
-    
-    main('C09', '04', RINEX, SP3, OBS_RINEX, dpl1, average_length, nq_slice=[1700, -1], r2l_slice=[35, -1])
+    # main('C09', '02', RINEX, SP3, OBS_RINEX, dpl1, average_length, nq_slice=[1700, -1], r2l_slice=[35, -1])
     # diff_plots()
+    tec_plot()
+    # nq_time, nq_stec = [], []
+    # with open('сборка/stdout.txt', 'r') as f:
+    #     for i, line in enumerate(f.readlines()):
+    #         l = [x for x in line.split(' ') if x]
+    #         time = l[1]
+    #         tec = l[-1]
+    #         nq_time.append(float(time))
+    #         nq_stec.append(float(tec))
+
+    # for i in range(1):
+    #     nq_stec.append(nq_stec[0])
+    #     nq_stec.pop(0)
+
+    # plt.plot(nq_time, nq_stec)
+    # plt.grid()
+    # plt.ylabel('STEC, TECU')
+    # plt.xlabel('Время суток')
+    # plt.show()
     end = datetime.now()
     time = end - start
     print(f'execution time {time.microseconds / 1000}ms')
