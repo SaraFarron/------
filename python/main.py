@@ -1,3 +1,4 @@
+import enum
 import os
 from os import system
 from datetime import datetime
@@ -12,7 +13,7 @@ from xyz_to_blh import xyz_to_blh
 
 matplotlib.rcParams.update({'font.size': 17})
 RINEX = 'ftp_data/gnss/data/daily/2020/001/20l/CHPI00BRA_R_20200010000_01D_EN.rnx'
-SP3 = 'ftp_data/gnss/products/2086/emr20864.sp3'
+SP3 = 'ftp_data/gnss/products/2086/gfz20864.sp3'
 OBS_RINEX = 'PPPH/Example/ISTA00TUR_R_20171910000_01D_30S_MO.00o'
 
 
@@ -255,7 +256,7 @@ def diff_plots():
     plt.clf()
 
 
-def tec_plot():
+def tec_plot(sat):
     print('reading rnx')
     # Get ionospheric coefficients
     gal = read_file(RINEX, 2, 7, 41).replace('D', 'e').split(' ')
@@ -271,14 +272,29 @@ def tec_plot():
     year, month, day = map(int, [date[:4], date[4:6], date[6:]])
 
     nq_time, nq_stec = [], []
+    j = False
 
     print('writing stdin.txt\n reading sp3')
     with open('сборка/stdin.txt', 'w') as input_data:
-        for i in range(86400):
-            b, l, h = [x, y, z + 2e4]
-            ut = i / 86400 * 24
+        with open(SP3, 'r') as sp3:
+            for i, line in enumerate(sp3.readlines()):
+                if line[:4] == sat:
+                    print('checking ' + sat)
+                    l = [x for x in line.split(' ') if x]
+                    sat_cords = list(map(float, [l[1], l[2], l[3]]))
+                    # um = calc_um(sat_cords, station_cords)
+                    # if um < 0:
+                    #     print('um is ' + str(um))
+                    #     continue
+                    print('+1')
+                    j = True
+                    b, l, h = xyz_to_blh(*sat_cords)
+                    ut = i * 15 / 96
 
-            input_data.write(f'{month} {ut} {y} {x} {z} {l} {b} {h}\n')
+                    input_data.write(f'{month} {ut} {y} {x} {z} {l} {b} {h}\n')
+
+    if not j:
+        return
 
     print('running nequick')
 
@@ -302,7 +318,8 @@ def tec_plot():
     plt.grid()
     plt.ylabel('STEC, TECU')
     plt.xlabel('Время суток')
-    plt.show()
+    plt.savefig(f'pres pics/{sat}.png')
+    plt.clf()
 
 
 if __name__ == '__main__':
@@ -311,7 +328,9 @@ if __name__ == '__main__':
     dpl1 = -2.928
     # main('C09', '02', RINEX, SP3, OBS_RINEX, dpl1, average_length, nq_slice=[1700, -1], r2l_slice=[35, -1])
     # diff_plots()
-    tec_plot()
+    sats = [f'PG0{x}' for x in range(1, 10)] + [f'PG{x}' for x in range(10, 20)]
+    for sat in sats:
+        tec_plot(sat)
     # nq_time, nq_stec = [], []
     # with open('сборка/stdout.txt', 'r') as f:
     #     for i, line in enumerate(f.readlines()):
