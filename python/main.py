@@ -328,27 +328,31 @@ if __name__ == '__main__':
     dpl1 = -2.928
     # main('C09', '02', RINEX, SP3, OBS_RINEX, dpl1, average_length, nq_slice=[1700, -1], r2l_slice=[35, -1])
     # diff_plots()
-    sats = [f'PG0{x}' for x in range(1, 10)] + [f'PG{x}' for x in range(10, 20)]
-    for sat in sats:
-        tec_plot(sat)
-    # nq_time, nq_stec = [], []
-    # with open('сборка/stdout.txt', 'r') as f:
-    #     for i, line in enumerate(f.readlines()):
-    #         l = [x for x in line.split(' ') if x]
-    #         time = l[1]
-    #         tec = l[-1]
-    #         nq_time.append(float(time))
-    #         nq_stec.append(float(tec))
+    # sats = [f'PG0{x}' for x in range(1, 10)] + [f'PG{x}' for x in range(10, 20)]
+    # for sat in sats:
+    #     tec_plot(sat)
+    nq_time, nq_stec = [], []
+    with open('сборка/stdout.txt', 'r') as f:
+        counter = 0
+        for i, line in enumerate(f.readlines()):
+            counter += 1
+            if counter == 32:
+                counter = 0
+                l = [x for x in line.split(' ') if x]
+                time = l[1]
+                tec = l[-1]
+                nq_time.append(float(time))
+                nq_stec.append(float(tec))
 
-    # for i in range(1):
-    #     nq_stec.append(nq_stec[0])
-    #     nq_stec.pop(0)
+    for i in range(round(900 / 32)):
+        nq_stec.append(nq_stec[0])
+        nq_stec.pop(0)
 
-    # plt.plot(nq_time, nq_stec)
-    # plt.grid()
-    # plt.ylabel('STEC, TECU')
-    # plt.xlabel('Время суток')
-    # plt.show()
+    plt.plot(nq_time, nq_stec)
+    plt.grid()
+    plt.ylabel('STEC, TECU')
+    plt.xlabel('Время суток')
+    plt.show()
     end = datetime.now()
     time = end - start
     print(f'execution time {time.microseconds / 1000}ms')
